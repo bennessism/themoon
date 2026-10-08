@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#05070b">
+<title>The Moon</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main id="app">
+  <section id="scene" class="scene telescope-mode" aria-label="Moon observatory">
+    <div class="sky">
+      <div class="stars" aria-hidden="true"></div>
+      <div class="clouds" aria-hidden="true"></div>
+      <div class="rain" aria-hidden="true"></div>
+      <div class="moon-wrap" id="moonWrap">
+        <div class="moon" id="moon" aria-label="Current Moon phase">
+          <span class="crater c1"></span><span class="crater c2"></span><span class="crater c3"></span>
+          <span class="crater c4"></span><span class="crater c5"></span>
+          <span class="moon-shadow" id="moonShadow"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="observatory" aria-hidden="true">
+      <div class="roof roof-left"></div>
+      <div class="roof roof-right"></div>
+      <div class="hatch-frame"></div>
+      <div class="floor"></div>
+      <div class="desk"><span class="lamp"></span><span class="chart"></span></div>
+      <div class="mounted-scope"><span class="scope-body"></span><span class="scope-leg l1"></span><span class="scope-leg l2"></span></div>
+      <div class="console"><i></i><i></i><i></i></div>
+    </div>
+
+    <div class="eyepiece" aria-hidden="true">
+      <div class="eyepiece-ring"></div>
+      <div class="eyepiece-vignette"></div>
+    </div>
+
+    <header class="topbar">
+      <div>
+        <h1>The Moon</h1>
+        <p id="viewLabel">Telescope view</p>
+      </div>
+      <button id="infoBtn" class="round-btn" type="button" aria-label="Moon information">i</button>
+    </header>
+
+    <button id="sceneToggle" class="scene-toggle" type="button" aria-label="Switch to observatory room view">
+      <span id="tapHint">Tap for observatory</span>
+    </button>
+
+    <footer class="bottom">
+      <button id="locationBtn" class="location-btn" type="button"><span id="locationLabel">Loading location…</span><b>⌄</b></button>
+      <div class="moon-summary">
+        <strong id="phaseName">Moon</strong>
+        <span><b id="illumination">--%</b> illuminated · <span id="weatherLabel">Loading weather…</span></span>
+      </div>
+    </footer>
+
+    <aside id="infoPanel" class="panel" aria-hidden="true">
+      <button id="infoClose" class="panel-close" type="button" aria-label="Close">×</button>
+      <div class="eyebrow">Moon now</div>
+      <h2 id="panelPhase">—</h2>
+      <div class="facts">
+        <div><span>Illumination</span><strong id="panelIllum">—</strong></div>
+        <div><span>Lunar age</span><strong id="panelAge">—</strong></div>
+        <div><span>Distance</span><strong id="panelDistance">Reference pending</strong></div>
+        <div><span>Weather</span><strong id="panelWeather">—</strong></div>
+      </div>
+      <p class="source-note">Phase display is currently calculated locally. The app structure is prepared for the cached NASA Goddard / LRO yearly Moon dataset.</p>
+    </aside>
+
+    <aside id="locationPanel" class="panel location-panel" aria-hidden="true">
+      <button id="locationClose" class="panel-close" type="button" aria-label="Close">×</button>
+      <div class="eyebrow">Viewing place</div>
+      <h2>Choose location</h2>
+      <label>Country<select id="countrySelect"></select></label>
+      <label>Location<select id="locationSelect"></select></label>
+      <button id="applyLocation" class="apply-btn" type="button">Use location</button>
+      <p class="source-note">The Moon phase is global. Place is used for local weather and viewing atmosphere.</p>
+    </aside>
+  </section>
+</main>
+<script src="app.js"></script>
+</body>
+</html>
