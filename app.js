@@ -22,6 +22,8 @@ function lunarData(date=new Date()){
   return{age,lit,waxing,name};
 }
 let currentNASARecord=null;
+let selectedNASARecord=null;
+let selectedNASAWhen=null;
 function illuminatedPhaseName(illum,age){
   const waxing=age<14.77;
   if(illum<1.5)return 'New Moon';
@@ -51,7 +53,7 @@ function setMoonShadow(target,fraction,waxing){
   target.innerHTML='<svg viewBox="0 0 100 100" width="100%" height="100%" preserveAspectRatio="none" aria-hidden="true">'+lunarShadowPath(fraction,waxing)+'</svg>';
 }
 function renderMoon(){
-  const m=lunarData(),record=currentNASARecord;
+  const m=lunarData(),record=selectedNASARecord||currentNASARecord;
   const pct=record?Number(record.phase):m.lit*100;
   const age=record?Number(record.age):m.age;
   const waxing=age<14.77;
@@ -62,6 +64,7 @@ function renderMoon(){
   $('panelAge').textContent=age.toFixed(2)+' days';
   $('panelDistance').textContent=record?Math.round(Number(record.distance)).toLocaleString('en-US')+' km':'NASA data unavailable';
   setMoonShadow(moonShadow,pct/100,waxing);
+  $('moon').setAttribute('aria-label',name+' · '+pct.toFixed(1)+'% illuminated'+(selectedNASAWhen?' · '+selectedNASAWhen+' UTC':''));
 }
 async function loadCurrentNASA(){
   const now=new Date(),year=now.getUTCFullYear();
@@ -170,13 +173,8 @@ function setReportDate(date){
   reportMonth.value=String(date.getUTCMonth());syncDays();
   reportDay.value=String(date.getUTCDate());reportHour.value=String(date.getUTCHours());
 }
-function reportPhaseName(row,prior,next){
-  const age=Number(row.age),illum=Number(row.phase);
-  const waxing=next&&prior?Number(next.phase)>=Number(prior.phase):age<14.77;
-  if(illum<=1.5)return 'New Moon';
-  if(illum>=98.5)return 'Full Moon';
-  if(Math.abs(illum-50)<=2)return waxing?'First Quarter':'Last Quarter';
-  return (waxing?'Waxing ':'Waning ')+(illum<50?'Crescent':'Gibbous');
+function reportPhaseName(row){
+  return illuminatedPhaseName(Number(row.phase),Number(row.age));
 }
 function reportIndex(year,month,day,hour){
   return Math.round((Date.UTC(year,month,day,hour)-Date.UTC(year,0,1))/3600000);
@@ -189,6 +187,10 @@ function renderReport(){
     $('reportContent').hidden=true;$('reportStatus').textContent='No NASA hourly record for this selection.';return;
   }
   const prev=records[Math.max(0,index-1)],next=records[Math.min(records.length-1,index+1)];
+  // The main dome Moon follows this exact selected NASA hourly record.
+  selectedNASARecord=row;
+  selectedNASAWhen=row.time;
+  renderMoon();
   $('reportContent').hidden=false;
   $('reportStatus').textContent='NASA hourly record · '+row.time;
   $('reportDate').textContent=MONTHS[Number(reportMonth.value)]+' '+reportDay.value+', '+reportYear.value+' · '+pad(reportHour.value)+':00 UTC';
