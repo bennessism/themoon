@@ -1,5 +1,5 @@
 /* Moon PWA: app shell only; NASA annual datasets and live weather always use network. */
-const CACHE_NAME = 'themoon-shell-v1';
+const CACHE_NAME = 'themoon-shell-v2';
 const SHELL = ['./', './index.html', './style.css', './app.js',
   './icon-192.png', './icon-512.png', './apple-touch-icon.png', './favicon-32x32.png'];
 self.addEventListener('install', event => {
@@ -29,7 +29,7 @@ self.addEventListener('fetch', event => {
     return;
   }
   event.respondWith(fetch(req).then(response => {
-    if (response.ok && SHELL.some(path => url.pathname.endsWith(path.replace(/^\.\//, '')))) {
+    if (response.ok && SHELL.slice(1).some(path => url.pathname.endsWith('/' + path.slice(2)))) {
       const copy = response.clone();
       caches.open(CACHE_NAME).then(cache => cache.put(req, copy)).catch(() => {});
     }
