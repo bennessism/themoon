@@ -233,3 +233,12 @@
 
 /* Remove the legacy rear barrel cap now that the telescope has separate optical ends. */
 .observatory-mode .scope-body:after{content:none}
+
+
+/* Ensure the lunar SVG shadow actually covers the preview's full circular disk.
+   The former percentage-height child could collapse inside an aspect-ratio-only parent. */
+.phase-orb{position:relative;overflow:hidden;background:radial-gradient(circle at 38% 34%,#f2f1e8,#c7ccd0 65%,#808e99)}
+.phase-orb-shadow{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none}
+.phase-orb-shadow svg{position:absolute;inset:0;width:100%;height:100%;display:block}
+.moon-shadow{overflow:hidden}
+.moon-shadow svg{display:block;width:100%;height:100%}
