@@ -9,7 +9,7 @@
 </head>
 <body>
 <main id="app">
-  <section id="scene" class="scene telescope-mode" aria-label="Moon observatory">
+  <section id="scene" class="scene observatory-mode" aria-label="Moon observatory">
     <div class="sky">
       <div class="stars" aria-hidden="true"></div>
       <div class="clouds" aria-hidden="true"></div>
@@ -28,9 +28,11 @@
       <div class="roof roof-right"></div>
       <div class="hatch-frame"></div>
       <div class="floor"></div>
-      <div class="desk"><span class="lamp"></span><span class="chart"></span></div>
+      <div class="desk"><span class="lamp"></span><span class="chart"></span><span class="desk-screen"><span class="screen-moon"></span><span class="screen-bars"></span></span></div>
       <div class="mounted-scope"><span class="scope-body"></span><span class="scope-leg l1"></span><span class="scope-leg l2"></span></div>
       <div class="console"><i></i><i></i><i></i></div>
+      <button id="workstationBtn" class="equipment-hotspot workstation-hotspot" type="button" aria-label="Open Moon workstation"><span>▤ Moon Workstation</span></button>
+      <button id="telescopeBtn" class="equipment-hotspot telescope-hotspot" type="button" aria-label="Look through telescope"><span>◉ Telescope</span></button>
     </div>
 
     <div class="eyepiece" aria-hidden="true">
@@ -41,14 +43,12 @@
     <header class="topbar">
       <div>
         <h1>The Moon</h1>
-        <p id="viewLabel">Telescope view</p>
+        <p id="viewLabel">Lunar Monitoring Dome</p>
       </div>
       <button id="infoBtn" class="round-btn" type="button" aria-label="Moon information">i</button>
     </header>
 
-    <button id="sceneToggle" class="scene-toggle" type="button" aria-label="Switch to observatory room view">
-      <span id="tapHint">Tap for observatory</span>
-    </button>
+    <button id="sceneToggle" class="scene-toggle back-to-dome" type="button" aria-label="Back to dome"><span id="tapHint">← Back to dome</span></button>
 
     <footer class="bottom">
       <button id="locationBtn" class="location-btn" type="button"><span id="locationLabel">Loading location…</span><b>⌄</b></button>
@@ -70,6 +70,35 @@
       </div>
       <p class="source-note">Phase display is currently calculated locally. The app structure is prepared for the cached NASA Goddard / LRO yearly Moon dataset.</p>
     </aside>
+
+    <section id="workstationPanel" class="workstation-panel" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="workstationTitle">
+      <div class="report-heading">
+        <div><div class="eyebrow">Lunar Research · NASA SVS</div><h2 id="workstationTitle">Moon Workstation</h2><p>Annual lunar reporting archive · UTC measurements</p></div>
+        <button id="workstationClose" class="panel-close" type="button" aria-label="Back to dome">×</button>
+      </div>
+      <div class="report-tools">
+        <label>Year <select id="reportYear" aria-label="Report year"></select></label>
+        <label>Month <select id="reportMonth" aria-label="Report month"></select></label>
+        <label>Day <select id="reportDay" aria-label="Report day"></select></label>
+        <label>Hour (UTC) <select id="reportHour" aria-label="Report hour UTC"></select></label>
+        <button id="reportToday" class="report-today" type="button">Current date</button>
+      </div>
+      <p id="reportStatus" class="report-status" role="status" aria-live="polite">Select a date to load NASA observations.</p>
+      <div id="reportContent" hidden>
+        <div class="report-date-row"><h3 id="reportDate">—</h3><span id="reportPhase">—</span></div>
+        <div class="report-metrics">
+          <div><span>Illumination</span><strong id="reportIllum">—</strong></div>
+          <div><span>Lunar age</span><strong id="reportAge">—</strong></div>
+          <div><span>Earth–Moon distance</span><strong id="reportDistance">—</strong></div>
+          <div><span>Apparent diameter</span><strong id="reportDiameter">—</strong></div>
+        </div>
+        <div class="report-monthly">
+          <h3>Monthly report</h3>
+          <p id="reportMonthSummary">—</p>
+        </div>
+      </div>
+      <p class="source-note">Source: NASA Goddard Scientific Visualization Studio. Hourly geocentric predictions, not live telescope readings. The selected year is loaded independently.</p>
+    </section>
 
     <aside id="locationPanel" class="panel location-panel" aria-hidden="true">
       <button id="locationClose" class="panel-close" type="button" aria-label="Close">×</button>
