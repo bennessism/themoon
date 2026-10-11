@@ -10,6 +10,7 @@
 <body>
 <main id="app">
   <section id="scene" class="scene observatory-mode" aria-label="Moon observatory">
+    <div id="stageViewport" class="stage-viewport" aria-label="Swipe horizontally to explore the lunar dome"><div id="stageSpacer" class="stage-spacer">
     <div id="sceneStage" class="scene-stage" aria-label="Lunar dome interactive stage">
     <div class="sky">
       <div class="stars" aria-hidden="true"></div>
@@ -34,7 +35,6 @@
         <span class="scope-saddle"></span><span class="scope-mount"></span><span class="scope-axis"></span>
         <span class="scope-counterweight"></span><span class="scope-pier"></span><span class="scope-pier-foot"></span>
       </div>
-      <div class="console"><i></i><i></i><i></i></div>
       <button id="workstationBtn" class="equipment-hotspot workstation-hotspot" type="button" aria-label="Open Moon workstation"><span class="sr-only">Open Moon Workstation</span></button>
       <button id="telescopeBtn" class="equipment-hotspot telescope-hotspot" type="button" aria-label="Look through telescope"><span class="sr-only">Look through telescope</span></button>
     </div>
@@ -45,6 +45,8 @@
     </div>
 
     </div><!-- fixed-resolution scene stage -->
+    </div><!-- stage spacer -->
+    </div><!-- horizontal viewport -->
 
     <header class="topbar">
       <div class="brand-group">
