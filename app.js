@@ -1,7 +1,7 @@
 const $=id=>document.getElementById(id);
 const scene=$('scene'),moonShadow=$('moonShadow'),phaseName=$('phaseName'),illumination=$('illumination'),weatherLabel=$('weatherLabel'),locationLabel=$('locationLabel');
 const countrySelect=$('countrySelect'),locationSelect=$('locationSelect');
-let roomView=false,catalog=null,currentWeather=null;
+let roomView=true,catalog=null,currentWeather=null;
 
 function lunarData(date=new Date()){
   const synodic=29.530588853;
@@ -74,12 +74,14 @@ async function loadWeather(){
 }
 function setRoomView(next){
   roomView=next;scene.classList.toggle('observatory-mode',roomView);scene.classList.toggle('telescope-mode',!roomView);
-  $('viewLabel').textContent=roomView?'Lunar observatory':'Telescope view';
-  $('tapHint').textContent=roomView?'Tap for telescope':'Tap for observatory';
-  $('sceneToggle').setAttribute('aria-label',roomView?'Switch to telescope view':'Switch to observatory room view');
+  $('viewLabel').textContent=roomView?'Lunar Monitoring Dome':'Telescope View';
+  $('tapHint').textContent='← Back to dome';
+  $('sceneToggle').setAttribute('aria-label','Back to dome');
 }
 function panelToggle(panel,show){panel.classList.toggle('show',show);panel.setAttribute('aria-hidden',String(!show))}
-$('sceneToggle').addEventListener('click',()=>setRoomView(!roomView));
+$('sceneToggle').addEventListener('click',()=>setRoomView(true));
+$('telescopeBtn').addEventListener('click',()=>{closeWorkstation();panelToggle($('infoPanel'),false);panelToggle($('locationPanel'),false);setRoomView(false)});
+$('workstationBtn').addEventListener('click',openWorkstation);
 $('infoBtn').addEventListener('click',()=>panelToggle($('infoPanel'),!$('infoPanel').classList.contains('show')));
 $('infoClose').addEventListener('click',()=>panelToggle($('infoPanel'),false));
 $('locationBtn').addEventListener('click',()=>panelToggle($('locationPanel'),true));
@@ -88,3 +90,115 @@ countrySelect.addEventListener('change',populateLocations);
 $('applyLocation').addEventListener('click',()=>{const loc=selectedLocation();localStorage.setItem('themoonCountry',countrySelect.value);localStorage.setItem('themoonLocation',loc.id);panelToggle($('locationPanel'),false);loadWeather()});
 renderMoon();loadCatalog().then(loadWeather);
 setInterval(renderMoon,10*60*1000);
+
+/* One-year-at-a-time NASA SVS workstation archive. */
+const reportYear=$('reportYear'),reportMonth=$('reportMonth'),reportDay=$('reportDay'),reportHour=$('reportHour');
+const reportPanel=$('workstationPanel');
+const MONTHS=Array.from({length:12},(_,i)=>new Date(Date.UTC(2020,i,1)).toLocaleString('en',{month:'long',timeZone:'UTC'}));
+let archiveYear=null,archiveRecords=null,archiveRequest=0,archiveManifest=null;
+const pad=n=>String(n).padStart(2,'0');
+const readable=n=>Number(n).toLocaleString('en-US');
+function fillSelect(el,values,selected){
+  el.replaceChildren();
+  values.forEach(([value,label])=>el.add(new Option(label,String(value))));
+  if(selected!==undefined)el.value=String(selected);
+}
+function syncDays(){
+  const count=new Date(Date.UTC(Number(reportYear.value),Number(reportMonth.value)+1,0)).getUTCDate();
+  const previous=Number(reportDay.value)||1;
+  fillSelect(reportDay,Array.from({length:count},(_,i)=>[i+1,String(i+1)]),Math.min(previous,count));
+}
+function setReportDate(date){
+  const y=date.getUTCFullYear();
+  if(Array.from(reportYear.options).some(o=>o.value===String(y)))reportYear.value=String(y);
+  reportMonth.value=String(date.getUTCMonth());syncDays();
+  reportDay.value=String(date.getUTCDate());reportHour.value=String(date.getUTCHours());
+}
+function reportPhaseName(row,prior,next){
+  const age=Number(row.age),illum=Number(row.phase);
+  const waxing=next&&prior?Number(next.phase)>=Number(prior.phase):age<14.77;
+  if(illum<=1.5)return 'New Moon';
+  if(illum>=98.5)return 'Full Moon';
+  if(Math.abs(illum-50)<=2)return waxing?'First Quarter':'Last Quarter';
+  return (waxing?'Waxing ':'Waning ')+(illum<50?'Crescent':'Gibbous');
+}
+function reportIndex(year,month,day,hour){
+  return Math.round((Date.UTC(year,month,day,hour)-Date.UTC(year,0,1))/3600000);
+}
+function selectedReportIndex(){return reportIndex(Number(reportYear.value),Number(reportMonth.value),Number(reportDay.value),Number(reportHour.value))}
+function renderReport(){
+  if(archiveYear!==Number(reportYear.value)||!archiveRecords)return;
+  const records=archiveRecords,index=selectedReportIndex(),row=records[index];
+  if(!row){
+    $('reportContent').hidden=true;$('reportStatus').textContent='No NASA hourly record for this selection.';return;
+  }
+  const prev=records[Math.max(0,index-1)],next=records[Math.min(records.length-1,index+1)];
+  $('reportContent').hidden=false;
+  $('reportStatus').textContent='NASA hourly record · '+row.time;
+  $('reportDate').textContent=MONTHS[Number(reportMonth.value)]+' '+reportDay.value+', '+reportYear.value+' · '+pad(reportHour.value)+':00 UTC';
+  $('reportPhase').textContent=reportPhaseName(row,prev,next);
+  $('reportIllum').textContent=Number(row.phase).toFixed(1)+'%';
+  $('reportAge').textContent=Number(row.age).toFixed(2)+' days';
+  $('reportDistance').textContent=readable(Math.round(Number(row.distance)))+' km';
+  $('reportDiameter').textContent=Number(row.diameter).toFixed(1)+' arcsec';
+  const month=Number(reportMonth.value),year=Number(reportYear.value);
+  const first=reportIndex(year,month,1,0);
+  const end=reportIndex(year,month+1,1,0);
+  const monthRows=records.slice(first,end).filter(r=>Number.isFinite(Number(r.phase)));
+  if(monthRows.length){
+    const min=Math.min(...monthRows.map(r=>Number(r.phase)));
+    const max=Math.max(...monthRows.map(r=>Number(r.phase)));
+    $('reportMonthSummary').textContent=`${monthRows.length} hourly observations · illumination ranged from ${min.toFixed(1)}% to ${max.toFixed(1)}% during ${MONTHS[month]} ${year}.`;
+  }
+}
+async function loadReportYear(){
+  const year=Number(reportYear.value),request=++archiveRequest;
+  $('reportStatus').textContent='Loading NASA '+year+' lunar archive…';
+  $('reportContent').hidden=true;
+  if(archiveYear===year&&archiveRecords){renderReport();return}
+  try{
+    const response=await fetch('data/moon/'+year+'.json');
+    if(!response.ok)throw Error('Year file unavailable ('+response.status+')');
+    const records=await response.json();
+    const expected=(new Date(Date.UTC(year+1,0,1))-new Date(Date.UTC(year,0,1)))/3600000;
+    if(!Array.isArray(records)||records.length<expected||!records[0]?.time||!Number.isFinite(Number(records[0]?.phase)))throw Error('Invalid or incomplete annual archive');
+    if(request!==archiveRequest)return;
+    archiveYear=year;archiveRecords=records;renderReport();
+  }catch(err){
+    if(request!==archiveRequest)return;
+    archiveYear=null;archiveRecords=null;
+    $('reportStatus').textContent='NASA archive for '+year+' could not be loaded: '+err.message+'.';
+  }
+}
+async function initializeReport(){
+  fillSelect(reportMonth,MONTHS.map((name,i)=>[i,name]));
+  fillSelect(reportHour,Array.from({length:24},(_,i)=>[i,pad(i)+':00']));
+  let years=Array.from({length:8},(_,i)=>2019+i);
+  try{
+    const response=await fetch('data/moon/manifest.json');
+    if(response.ok){
+      const manifest=await response.json();
+      const available=Object.keys(manifest).map(Number).filter(Number.isInteger).sort((a,b)=>a-b);
+      if(available.length){years=available;archiveManifest=manifest}
+    }
+  }catch{}
+  fillSelect(reportYear,years.map(y=>[y,String(y)]),String(new Date().getFullYear()));
+  if(!reportYear.value||!years.includes(Number(reportYear.value)))reportYear.value=String(years.at(-1));
+  setReportDate(new Date());
+}
+function openWorkstation(){
+  setRoomView(true);
+  panelToggle($('infoPanel'),false);panelToggle($('locationPanel'),false);
+  panelToggle(reportPanel,true);
+  loadReportYear();
+  reportYear.focus();
+}
+function closeWorkstation(){panelToggle(reportPanel,false)}
+$('workstationClose').addEventListener('click',closeWorkstation);
+$('reportToday').addEventListener('click',()=>{setReportDate(new Date());loadReportYear()});
+reportYear.addEventListener('change',()=>{syncDays();loadReportYear()});
+reportMonth.addEventListener('change',()=>{syncDays();renderReport()});
+reportDay.addEventListener('change',renderReport);
+reportHour.addEventListener('change',renderReport);
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&reportPanel.classList.contains('show'))closeWorkstation()});
+initializeReport();
