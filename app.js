@@ -23,7 +23,7 @@ function lunarData(date=new Date()){
 }
 function renderMoon(){
   const m=lunarData(),pct=Math.round(m.lit*100);
-  phaseName.textContent=m.name;illumination.textContent=pct+'%';
+  phaseName.textContent=m.name;illumination.textContent=pct+'%';$('topSummary').textContent=m.name+' · '+pct+'%';
   $('panelPhase').textContent=m.name;$('panelIllum').textContent=pct+'%';$('panelAge').textContent=m.age.toFixed(1)+' days';
   const k=Math.cos(m.age/29.530588853*2*Math.PI);
   const side=m.waxing?'right':'left';
@@ -78,16 +78,18 @@ function setRoomView(next){
   $('tapHint').textContent='← Back to dome';
   $('sceneToggle').setAttribute('aria-label','Back to dome');
 }
-function panelToggle(panel,show){panel.classList.toggle('show',show);panel.setAttribute('aria-hidden',String(!show))}
+function panelToggle(panel,show){panel.classList.toggle('show',show);panel.setAttribute('aria-hidden',String(!show));if(panel.id==='infoPanel')$('infoBtn').setAttribute('aria-expanded',String(show))}
 $('sceneToggle').addEventListener('click',()=>setRoomView(true));
 $('telescopeBtn').addEventListener('click',()=>{closeWorkstation();panelToggle($('infoPanel'),false);panelToggle($('locationPanel'),false);setRoomView(false)});
 $('workstationBtn').addEventListener('click',openWorkstation);
-$('infoBtn').addEventListener('click',()=>panelToggle($('infoPanel'),!$('infoPanel').classList.contains('show')));
+$('infoBtn').addEventListener('click',()=>{const opening=!$('infoPanel').classList.contains('show');panelToggle($('locationPanel'),false);panelToggle($('infoPanel'),opening)});
 $('infoClose').addEventListener('click',()=>panelToggle($('infoPanel'),false));
-$('locationBtn').addEventListener('click',()=>panelToggle($('locationPanel'),true));
+$('locationBtn').addEventListener('click',()=>{panelToggle($('infoPanel'),false);panelToggle($('locationPanel'),!$('locationPanel').classList.contains('show'))});
 $('locationClose').addEventListener('click',()=>panelToggle($('locationPanel'),false));
 countrySelect.addEventListener('change',populateLocations);
 $('applyLocation').addEventListener('click',()=>{const loc=selectedLocation();localStorage.setItem('themoonCountry',countrySelect.value);localStorage.setItem('themoonLocation',loc.id);panelToggle($('locationPanel'),false);loadWeather()});
+$('infoChangeLocation').addEventListener('click',()=>{panelToggle($('infoPanel'),false);panelToggle($('locationPanel'),true)});
+$('infoOpenWorkstation').addEventListener('click',openWorkstation);
 renderMoon();loadCatalog().then(loadWeather);
 setInterval(renderMoon,10*60*1000);
 
@@ -137,6 +139,7 @@ function renderReport(){
   $('reportStatus').textContent='NASA hourly record · '+row.time;
   $('reportDate').textContent=MONTHS[Number(reportMonth.value)]+' '+reportDay.value+', '+reportYear.value+' · '+pad(reportHour.value)+':00 UTC';
   $('reportPhase').textContent=reportPhaseName(row,prev,next);
+  updateReportVisualization(row,prev,next);
   $('reportIllum').textContent=Number(row.phase).toFixed(1)+'%';
   $('reportAge').textContent=Number(row.age).toFixed(2)+' days';
   $('reportDistance').textContent=readable(Math.round(Number(row.distance)))+' km';
@@ -148,6 +151,7 @@ function renderReport(){
   if(monthRows.length){
     const min=Math.min(...monthRows.map(r=>Number(r.phase)));
     const max=Math.max(...monthRows.map(r=>Number(r.phase)));
+    updateMonthlyVisualization(year,month,records);
     $('reportMonthSummary').textContent=`${monthRows.length} hourly observations · illumination ranged from ${min.toFixed(1)}% to ${max.toFixed(1)}% during ${MONTHS[month]} ${year}.`;
   }
 }
@@ -185,6 +189,71 @@ async function initializeReport(){
   fillSelect(reportYear,years.map(y=>[y,String(y)]),String(new Date().getFullYear()));
   if(!reportYear.value||!years.includes(Number(reportYear.value)))reportYear.value=String(years.at(-1));
   setReportDate(new Date());
+}
+
+function illuminationStyle(illum,waxing){
+  const amount=Math.max(0,Math.min(1,Number(illum)/100));
+  // A circular disk projection: illuminated portion bounded by an elliptical terminator.
+  const k=Math.abs(1-2*amount)*100;
+  const brightSide=waxing?'right':'left';
+  return {clip: amount<=.015?'inset(0 0 0 100%)':amount>=.985?'none':null,amount,k,brightSide};
+}
+function updateReportVisualization(row,prev,next){
+  const name=reportPhaseName(row,prev,next),illum=Number(row.phase);
+  const waxing=next&&prev?Number(next.phase)>=Number(prev.phase):Number(row.age)<14.77;
+  const orb=$('reportOrb'),shadow=$('reportOrbShadow');
+  const side=waxing?'right':'left';
+  orb.style.setProperty('--light-side',side);
+  // SVG terminator path is built from the illumination fraction; not a linear gradient.
+  const r=49,k=Math.abs(1-2*illum/100);
+  const phase=illum/100;
+
+  const sweep=phase<=.5?1:0;
+
+
+  const path= waxing
+    ? `M50 1 A49 49 0 0 1 50 99 A${Math.max(.01,k*r)} 49 0 0 ${sweep} 50 1 Z`
+    : `M50 1 A49 49 0 0 0 50 99 A${Math.max(.01,k*r)} 49 0 0 ${sweep?0:1} 50 1 Z`;
+  // Use masked SVG filled disk for the approximate earth-facing illuminated silhouette.
+  const svg= `<svg viewBox="0 0 100 100" aria-hidden="true"><defs><clipPath id="visualMoonClip"><circle cx="50" cy="50" r="49"/></clipPath></defs><circle cx="50" cy="50" r="49" fill="#101925"/><path d="${path}" fill="#cdd6dd" clip-path="url(#visualMoonClip)"/></svg>`;
+  shadow.innerHTML=svg;
+  $('reportVisualPhase').textContent=name;
+  $('reportVisualNote').textContent=illum.toFixed(1)+'% illuminated · '+(waxing?'waxing':'waning')+' · '+Number(row.age).toFixed(2)+' days since new Moon';
+}
+function updateMonthlyVisualization(year,month,records){
+  const count=new Date(Date.UTC(year,month+1,0)).getUTCDate();
+  const daily=Array.from({length:count},(_,i)=>{
+    const idx=reportIndex(year,month,i+1,12);
+    return {day:i+1,row:records[idx],value:Number(records[idx]?.phase)};
+  });
+  const chart=$('reportChart');chart.replaceChildren();
+  const maxWidth=680,height=112,plotBottom=98,plotTop=10;
+  const pts=daily.filter(d=>Number.isFinite(d.value)).map((d,i)=>[(i/(count-1))*maxWidth,plotBottom-(d.value/100)*(plotBottom-plotTop)]);
+  if(pts.length){
+    const ns='http://www.w3.org/2000/svg',svg=document.createElementNS(ns,'svg');
+    svg.setAttribute('viewBox','0 0 680 112');svg.setAttribute('preserveAspectRatio','none');svg.setAttribute('aria-hidden','true');
+    [0,50,100].forEach(v=>{const line=document.createElementNS(ns,'line');const y=plotBottom-v/100*(plotBottom-plotTop);line.setAttribute('x1','0');line.setAttribute('x2','680');line.setAttribute('y1',String(y));line.setAttribute('y2',String(y));line.setAttribute('stroke','#40536a');line.setAttribute('stroke-dasharray','3 8');svg.append(line)});
+    const line=document.createElementNS(ns,'polyline');line.setAttribute('points',pts.map(p=>p.join(',')).join(' '));line.setAttribute('fill','none');line.setAttribute('stroke','#bbd3eb');line.setAttribute('stroke-width','2.8');line.setAttribute('stroke-linejoin','round');line.setAttribute('vector-effect','non-scaling-stroke');svg.append(line);
+    chart.append(svg);
+  }
+  const cal=$('reportCalendar');cal.replaceChildren();
+  const dayOffset=(new Date(Date.UTC(year,month,1)).getUTCDay()+6)%7;
+  for(let i=0;i<dayOffset;i++){const blank=document.createElement('span');blank.className='calendar-blank';cal.append(blank)}
+  daily.forEach(d=>{
+    const button=document.createElement('button');button.type='button';button.className='calendar-day';
+    button.dataset.day=String(d.day);
+    if(Number(reportDay.value)===d.day)button.classList.add('selected');
+    const number=document.createElement('span');number.textContent=String(d.day);
+    const disk=document.createElement('span');disk.className='calendar-phase';
+    const value=Number.isFinite(d.value)?Math.max(0,Math.min(100,d.value)):0;
+    const waxing=Number(d.row?.age)<14.77;
+    disk.style.background=`linear-gradient(${waxing?'90deg':'270deg'},#b7c7d6 ${value}%,#182535 ${value}%)`;
+    const percentage=document.createElement('small');percentage.textContent=Number.isFinite(d.value)?Math.round(d.value)+'%':'—';
+    button.append(number,disk,percentage);
+    button.setAttribute('aria-label',`${MONTHS[month]} ${d.day}: ${Number.isFinite(d.value)?d.value.toFixed(1)+'% illumination':'data unavailable'} at 12:00 UTC`);
+    button.addEventListener('click',()=>{reportDay.value=String(d.day);reportHour.value='12';renderReport()});
+    cal.append(button);
+  });
 }
 function openWorkstation(){
   setRoomView(true);
