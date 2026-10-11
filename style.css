@@ -353,3 +353,16 @@
  .moon-info-panel{top:max(122px,calc(env(safe-area-inset-top) + 106px));left:15px;max-height:calc(100svh - 139px)}
 }
 @media(prefers-reduced-motion:reduce){.scene-stage .desk:after{animation:none!important}}
+
+
+/* Panorama viewport: single locked 1600x900 room on desktop and mobile */
+.stage-viewport{position:absolute;inset:0;overflow:hidden;scrollbar-width:none;overscroll-behavior-x:contain}
+.stage-viewport::-webkit-scrollbar{display:none}
+.stage-spacer{position:relative;width:100%;height:100%}
+.scene-stage{will-change:transform}
+@media(max-width:760px) and (orientation:portrait){
+ .scene.mobile-pan .stage-viewport{overflow-x:auto;overflow-y:hidden;touch-action:pan-x;-webkit-overflow-scrolling:touch}
+ .scene.mobile-pan .stage-spacer{height:100%}
+ .scene.mobile-pan .scene-stage{left:0;top:0;transform:scale(var(--stage-scale,1));transform-origin:top left}
+ .scene.mobile-pan .stage-viewport:focus-visible{outline:2px solid #9dc7df;outline-offset:-3px}
+}
