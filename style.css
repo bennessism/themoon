@@ -77,3 +77,101 @@
  .report-metrics>div{padding:13px}
  .report-metrics strong{font-size:17px}
 }
+
+
+/* 2026 lunar dome refinement – visual language shared with Window / Wind Field */
+.sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.scene{min-height:100svh}
+.observatory-mode .observatory{pointer-events:none}
+.observatory-mode .equipment-hotspot{pointer-events:auto}
+.dome-shell{position:absolute;inset:-30% -13% 17%;border-radius:50% 50% 14% 14% / 66% 66% 20% 20%;background:radial-gradient(ellipse at 50% 70%,transparent 0 22%,#132131b8 47%,#070d17 75%),repeating-radial-gradient(ellipse at 50% 87%,transparent 0 13%,#7190a619 13.2% 13.5%,transparent 13.8% 24%),linear-gradient(115deg,#090d14,#233449 50%,#070d15);box-shadow:inset 0 -24px 80px #01050a,inset 0 10px 60px #293b55}
+.dome-ribs{position:absolute;inset:4% 3%;border-radius:inherit;background:repeating-conic-gradient(from 0deg at 50% 75%,transparent 0 23deg,#7290a21e 24deg 24.5deg,transparent 26deg 47deg);opacity:.85}
+.dome-light{position:absolute;left:8%;right:8%;bottom:17%;height:3px;border-radius:50%;background:linear-gradient(90deg,transparent,#6697bd88,transparent);box-shadow:0 0 30px #6096c8aa}
+.dome-display{position:absolute;top:10%;left:50%;transform:translateX(-50%);width:min(66vw,860px);height:44%;border:clamp(8px,1.2vw,17px) solid #172633;border-radius:50% 50% 22% 22% / 18% 18% 9% 9%;background:radial-gradient(ellipse at 50% 46%,#1c3956 0%,#0a1627 65%,#04070c 100%);box-shadow:0 0 0 2px #304357,0 0 70px #3e85b52b,inset 0 0 52px #000b;overflow:hidden}
+.dome-display:after{content:"";position:absolute;inset:0;background:linear-gradient(120deg,#a6cee506,transparent 46%,#9cc4e509 51%,transparent 65%);pointer-events:none}
+.display-arc{position:absolute;inset:8% 6%;border:1px dashed #89b1d026;border-radius:50%}
+.display-label,.display-foot{position:absolute;z-index:1;color:#9fb9ce;font-size:clamp(8px,.9vw,11px);letter-spacing:.17em}
+.display-label{left:6%;top:8%}.display-foot{right:6%;bottom:8%}
+.observatory-mode .moon-wrap{top:31%;left:50%;z-index:9;transform:translate(-50%,-50%) scale(.55)}
+.observatory-mode .moon{width:min(32vw,330px);box-shadow:0 0 55px #b5cfe944,0 0 95px #7ca9c722}
+.observatory-mode .clouds,.observatory-mode .rain{opacity:0!important}
+.observatory-mode .floor{height:26%;background:radial-gradient(ellipse at 50% 0%,#273b4c 0,#0a121d 36%,#03070d 95%);border-top:3px solid #3b566c}
+.observatory-mode .floor:after{content:"";position:absolute;left:21%;right:21%;top:8%;height:100%;border:1px solid #7da7c42f;border-radius:50%;transform:perspective(500px) rotateX(71deg);box-shadow:0 0 24px #7ba6d51b}
+.observatory-mode .desk{left:11%;bottom:15%;width:25%;height:10%;background:linear-gradient(#243547,#101823);border:2px solid #344758;border-radius:8px 8px 4px 4px;box-shadow:0 18px 0 -8px #080f17,0 25px 35px #0009;transform:skewX(-4deg)}
+.observatory-mode .desk-screen{left:8%;width:82%;height:clamp(72px,15vh,145px);border-color:#26394b;box-shadow:0 0 32px #5586b23c,inset 0 0 20px #0008}
+.observatory-mode .desk-screen:after{content:"PHASE   ·   DATA";position:absolute;left:9%;bottom:9%;font-size:clamp(7px,.9vw,10px);letter-spacing:.15em;color:#b9d5e3}
+.observatory-mode .mounted-scope{right:12%;bottom:15%;width:28%;height:37%;filter:drop-shadow(0 20px 15px #0008)}
+.observatory-mode .scope-body{width:81%;height:20%;top:19%;background:linear-gradient(#536a78,#1c2c3c 43%,#0b121b);border:3px solid #6b8597;box-shadow:0 2px 15px #7fb9d433}
+.observatory-mode .scope-body:before{content:"";position:absolute;left:6%;top:10%;width:16%;height:80%;border-radius:50%;background:#050b12;border:2px solid #90b1c0}
+.observatory-mode .scope-leg{top:41%;height:58%;width:7px;background:linear-gradient(90deg,#172535,#6d8591,#111c2b)}
+.observatory-mode .equipment-hotspot{background:transparent;border:none;border-radius:0;box-shadow:none}
+.observatory-mode .equipment-hotspot:hover,.observatory-mode .equipment-hotspot:focus-visible{background:#6da7cf0f;outline:2px solid #8cc6e4aa;outline-offset:2px;border-radius:15px}
+.observatory-mode .equipment-hotspot span{display:none}
+.workstation-hotspot{left:10%;bottom:13%;width:29%;height:29%}
+.telescope-hotspot{right:9%;bottom:14%;width:35%;height:40%}
+.topbar{padding:max(20px,env(safe-area-inset-top)) max(20px,3vw) 0}
+.topbar h1{font-size:clamp(22px,2.6vw,30px);font-weight:750}
+.topbar p{font-size:11px;letter-spacing:.1em;text-transform:uppercase}
+.summary-chip{pointer-events:auto;display:flex;align-items:center;gap:9px;border:1px solid #ffffff20;border-radius:999px;background:#101822d9;color:#e9f1f9;padding:9px 13px;backdrop-filter:blur(12px);box-shadow:0 7px 24px #0003;cursor:pointer;font-size:12px;max-width:min(52vw,360px)}
+.summary-chip span:first-child{white-space:nowrap;text-overflow:ellipsis;overflow:hidden}
+.summary-chip span:last-child{opacity:.65}
+.summary-chip[aria-expanded="true"] span:last-child{transform:rotate(180deg)}
+.bottom{padding:0 max(20px,3vw) max(24px,env(safe-area-inset-bottom));align-items:end;gap:12px}
+.location-btn{font-size:12px;border:1px solid #ffffff20;background:#101822e8;box-shadow:0 8px 22px #0005;min-height:42px}
+.moon-summary{border:1px solid #ffffff18;border-radius:14px;background:#0e1721bf;padding:11px 15px;backdrop-filter:blur(12px);text-align:right}
+.moon-summary strong{font-size:14px}.moon-summary span{font-size:11px}
+.panel{top:max(72px,calc(env(safe-area-inset-top) + 58px));right:max(16px,3vw);width:min(340px,calc(100% - 32px));background:#101720f5;border:1px solid #ffffff17;border-radius:17px;padding:18px;box-shadow:0 20px 52px #0009}
+.panel h2{font-size:22px}
+.panel-close{background:#ffffff13;width:33px;height:33px;font-size:22px}
+.panel-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.panel-actions button{flex:1;border:1px solid #ffffff1b;border-radius:10px;padding:10px;background:#ffffff0c;color:#eaf2f9;font-size:11px;cursor:pointer}
+.location-panel{left:max(16px,3vw);right:auto;top:auto;bottom:max(84px,calc(env(safe-area-inset-bottom) + 75px));max-height:calc(100svh - 110px);overflow:auto}
+.location-panel .picker-description{color:#a7b6c5;font-size:12px;line-height:1.6}
+.location-panel label{font-size:11px}
+.location-panel select{background:#0a111a;border-color:#ffffff22;min-height:44px}
+.location-panel .apply-btn{background:#d7e4ed}
+.workstation-panel{background:linear-gradient(140deg,#101e2cfa,#070e17fa);border-color:#48647b}
+.report-visual{display:flex;gap:26px;align-items:center;padding:21px;border-radius:16px;background:radial-gradient(circle at 18% 50%,#2b4357,#111e2c 57%,#0e1824);border:1px solid #35506a;margin-bottom:18px}
+.phase-orb{flex:none;width:clamp(100px,18vw,160px);aspect-ratio:1;border-radius:50%;box-shadow:0 0 44px #7f9db533}
+.phase-orb-shadow,.phase-orb-shadow svg{width:100%;height:100%;display:block}
+.report-visual-copy{display:flex;flex-direction:column;gap:12px}
+.report-visual-copy strong{font-size:clamp(19px,3vw,28px)}
+.report-visual-copy>span:last-child{color:#9fb2c4;line-height:1.6;font-size:12px}
+.report-graph,.report-calendar-wrap{margin-top:24px;padding:17px;border-radius:16px;border:1px solid #2e435a;background:#0d1825}
+.report-section-head{display:flex;justify-content:space-between;align-items:baseline;gap:9px;flex-wrap:wrap;margin-bottom:16px}
+.report-section-head h3{font-size:15px;margin:0}
+.report-section-head span{font-size:10px;color:#94a9bd}
+.report-chart{height:135px;width:100%;padding:6px 0}
+.report-chart svg{width:100%;height:100%;display:block}
+.calendar-days,.report-calendar{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:7px}
+.calendar-days{margin-bottom:7px;color:#95a9bc;font-size:10px;text-align:center}
+.calendar-day{display:flex;flex-direction:column;align-items:center;justify-content:space-between;gap:8px;padding:10px 3px;min-height:91px;background:#132131;border:1px solid #32475b;color:#e8eff8;border-radius:10px;cursor:pointer;font-size:11px}
+.calendar-day:hover,.calendar-day:focus-visible{border-color:#a2c9e3;background:#1c3449}
+.calendar-day.selected{border-color:#d2e6f7;box-shadow:inset 0 0 0 1px #d2e6f7}
+.calendar-day small{color:#a1b7ca;font-size:10px}
+.calendar-phase{width:27px;height:27px;border-radius:50%;border:1px solid #536577;box-shadow:0 0 10px #8aa9c71a}
+.calendar-blank{min-height:0}
+@media(max-width:680px){
+ .dome-shell{inset:-13% -50% 20%}
+ .dome-display{top:15%;width:85vw;height:31%;border-width:7px}
+ .display-label,.display-foot{font-size:7px;letter-spacing:.09em}
+ .observatory-mode .moon-wrap{top:30%;left:50%;transform:translate(-50%,-50%) scale(.65)}
+ .observatory-mode .moon{width:37vw}
+ .observatory-mode .desk{left:5%;bottom:25%;width:39%}
+ .observatory-mode .mounted-scope{right:4%;bottom:25%;width:39%;height:26%}
+ .workstation-hotspot{left:3%;bottom:24%;width:44%;height:24%}
+ .telescope-hotspot{right:3%;bottom:24%;width:45%;height:30%}
+ .topbar{flex-wrap:wrap;gap:9px}
+ .summary-chip{margin-left:auto;max-width:55vw;padding:8px 10px;font-size:10px}
+ .moon-summary{padding:10px 12px;text-align:left}
+ .bottom{flex-direction:column-reverse;align-items:stretch}
+ .location-btn{max-width:100%;width:max-content}
+ .location-panel{bottom:max(130px,calc(env(safe-area-inset-bottom) + 115px))}
+ .report-visual{gap:15px;padding:13px}
+ .phase-orb{width:91px}
+ .calendar-days,.report-calendar{gap:4px}
+ .calendar-day{min-height:73px;padding:7px 1px;gap:5px}
+ .calendar-phase{width:20px;height:20px}
+ .calendar-day small{font-size:8px}
+ .report-graph,.report-calendar-wrap{padding:12px}
+}
