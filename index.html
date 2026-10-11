@@ -28,7 +28,14 @@
       <div class="dome-display" aria-hidden="true"><div class="display-arc"></div><span class="display-label">LUNAR SURFACE · MONITOR</span><span class="display-foot">GEOCENTRIC PHASE VIEW</span></div>
       <div class="floor"></div>
       <div class="desk" aria-hidden="true"><span class="desk-screen"><span class="work-screen-content"><span class="terminal-header">LUNAR SYSTEM // ONLINE</span><span class="terminal-grid"></span><span class="terminal-lines"></span><span class="terminal-cursor"></span></span><span class="screen-glitch"></span></span><span class="computer-base"><i class="activity-led"></i><i class="power-led"></i></span></div>
-      <div class="mounted-scope" aria-hidden="true"><span class="scope-back"></span><span class="scope-body"><span class="scope-highlight"></span></span><span class="scope-front"></span><span class="scope-focuser"></span><span class="scope-mount"></span><span class="scope-axis"></span><span class="scope-leg l1"></span><span class="scope-leg l2"></span><span class="scope-leg l3"></span></div>
+      <div class="mounted-scope" aria-hidden="true">
+        <span class="scope-body"><span class="scope-highlight"></span><span class="scope-band band-a"></span><span class="scope-band band-b"></span></span>
+        <span class="scope-front"></span><span class="scope-back"></span>
+        <span class="finder-tube"></span><span class="finder-bracket"></span>
+        <span class="scope-focuser"></span><span class="scope-diagonal"></span><span class="scope-eyepiece"></span>
+        <span class="scope-saddle"></span><span class="scope-mount"></span><span class="scope-axis"></span>
+        <span class="scope-counterweight"></span><span class="scope-pier"></span><span class="scope-pier-foot"></span>
+      </div>
       <div class="console"><i></i><i></i><i></i></div>
       <button id="workstationBtn" class="equipment-hotspot workstation-hotspot" type="button" aria-label="Open Moon workstation"><span class="sr-only">Open Moon Workstation</span></button>
       <button id="telescopeBtn" class="equipment-hotspot telescope-hotspot" type="button" aria-label="Look through telescope"><span class="sr-only">Look through telescope</span></button>
@@ -40,35 +47,36 @@
     </div>
 
     <header class="topbar">
-      <div>
+      <div class="brand-group">
         <h1>The Moon</h1>
         <p id="viewLabel">Lunar Monitoring Dome</p>
       </div>
-      <button id="infoBtn" class="summary-chip" type="button" aria-expanded="false" aria-label="Open Moon summary"><span id="topSummary">Moon information</span><span aria-hidden="true">⌄</span></button>
+      <button id="infoBtn" class="summary-chip" type="button" aria-expanded="false" aria-controls="infoPanel" aria-label="Moon information and viewing location">
+        <span id="locationLabel">Loading location…</span><span class="summary-separator" aria-hidden="true">·</span><span id="topSummary">Moon information</span><span class="summary-caret" aria-hidden="true">⌄</span>
+      </button>
     </header>
 
     <button id="sceneToggle" class="scene-toggle back-to-dome" type="button" aria-label="Back to dome"><span id="tapHint">← Back to dome</span></button>
 
-    <div class="area-dock"><button id="locationBtn" class="location-btn" type="button"><span id="locationLabel">Loading location…</span><b>⌄</b></button></div>
-
-    <footer class="bottom">
-      <div class="moon-summary">
-        <strong id="phaseName">Moon</strong>
-        <span><b id="illumination">--%</b> illuminated · <span id="weatherLabel">Loading weather…</span></span>
-      </div>
-    </footer>
-
-    <aside id="infoPanel" class="panel" aria-hidden="true">
+    <aside id="infoPanel" class="panel moon-info-panel" aria-hidden="true">
       <button id="infoClose" class="panel-close" type="button" aria-label="Close">×</button>
       <div class="eyebrow">Moon now · Observation summary</div>
       <h2 id="panelPhase">—</h2>
+      <p class="summary-location" id="panelLocation">Loading location…</p>
       <div class="facts">
         <div><span>Illumination</span><strong id="panelIllum">—</strong></div>
         <div><span>Lunar age</span><strong id="panelAge">—</strong></div>
         <div><span>Distance</span><strong id="panelDistance">Reference pending</strong></div>
-        <div><span>Weather</span><strong id="panelWeather">—</strong></div>
+        <div><span>Local weather</span><strong id="panelWeather">—</strong></div>
       </div>
-      <div class="panel-actions"><button type="button" id="infoChangeLocation">Change location</button><button type="button" id="infoOpenWorkstation">Open workstation</button></div><p class="source-note">Current Moon phase is an approximation; NASA archival measurements are available in the workstation.</p>
+      <div class="panel-actions"><button type="button" id="infoChangeLocation" aria-expanded="false" aria-controls="locationFields">Change location</button><button type="button" id="infoOpenWorkstation">Open workstation</button></div>
+      <div id="locationFields" class="picker-fields" hidden>
+        <label>Country<select id="countrySelect"></select></label>
+        <label>Location<select id="locationSelect"></select></label>
+        <button id="applyLocation" class="apply-btn" type="button">Use location</button>
+        <p class="source-note">Location changes local weather, not the global Moon phase.</p>
+      </div>
+      <p class="source-note">Current Moon phase uses NASA hourly geocentric data where available, otherwise an approximation.</p>
     </aside>
 
     <section id="workstationPanel" class="workstation-panel" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="workstationTitle">
@@ -103,15 +111,7 @@
       <p class="source-note">Source: NASA Goddard Scientific Visualization Studio. Hourly geocentric predictions, not live telescope readings. The selected year is loaded independently.</p>
     </section>
 
-    <aside id="locationPanel" class="panel location-panel" aria-hidden="true">
-      <button id="locationClose" class="panel-close" type="button" aria-label="Close">×</button>
-      <div class="eyebrow">Viewing place</div>
-      <h2>Viewing location</h2><p class="picker-description">Choose where you are observing from. Local weather updates for your selected place.</p>
-      <label>Country<select id="countrySelect"></select></label>
-      <label>Location<select id="locationSelect"></select></label>
-      <button id="applyLocation" class="apply-btn" type="button">Use location</button>
-      <p class="source-note">The Moon phase is global. Place is used for local weather and viewing atmosphere.</p>
-    </aside>
+
   </section>
 </main>
 <script src="app.js"></script>
