@@ -366,3 +366,85 @@
  .scene.mobile-pan .scene-stage{left:0;top:0;transform:scale(var(--stage-scale,1));transform-origin:top left}
  .scene.mobile-pan .stage-viewport:focus-visible{outline:2px solid #9dc7df;outline-offset:-3px}
 }
+
+
+/* Single-object lunar lab: one central workstation with a centered Moon display. */
+.stage-viewport{overflow:hidden!important}
+.scene-stage .mounted-scope,.scene-stage .telescope-hotspot,.scene-stage .eyepiece{display:none!important}
+.scene.observatory-mode .scene-stage .desk{
+  left:50%;right:auto;bottom:75px;width:525px;height:94px;
+  transform:translateX(-50%) skewX(-2deg);
+  border-radius:14px 14px 7px 7px;
+}
+.scene.observatory-mode .scene-stage .desk-screen{
+  left:4%;width:92%;height:230px;bottom:100%;
+  border:9px solid #263b4a;border-bottom-width:14px;border-radius:15px 15px 6px 6px;
+}
+.scene.observatory-mode .scene-stage .workstation-hotspot{
+  left:50%;right:auto;bottom:72px;width:545px;height:350px;
+  transform:translateX(-50%);
+}
+.scene.observatory-mode .scene-stage .dome-display{
+  top:100px;left:50%;width:1010px;height:365px;
+  transform:translateX(-50%);
+}
+.scene.observatory-mode .scene-stage .moon-wrap{
+  left:50%;top:280px;transform:translate(-50%,-50%) scale(.55);
+}
+.scene.observatory-mode .scene-stage .floor{height:210px}
+.scene.observatory-mode .scene-stage .desk:after{display:block}
+@media(max-width:760px){
+  #app,.scene{height:100svh;min-height:0}
+  .scene.mobile-column .scene-stage{
+    width:100%;height:100%;left:0;top:0;transform:none!important;
+    transform-origin:center center;overflow:hidden;
+  }
+  .scene.mobile-column .stage-spacer{width:100%;height:100%}
+  .scene.mobile-column .sky,.scene.mobile-column .observatory{inset:0}
+  .scene.mobile-column .dome-shell{
+    inset:-13% -60% 13%;border-radius:50% 50% 12% 12%;
+  }
+  .scene.mobile-column .dome-display,
+  .scene.mobile-column.observatory-mode .scene-stage .dome-display{
+    width:calc(100% - 28px);height:clamp(190px,35svh,350px);
+    left:50%;top:clamp(178px,24svh,255px);
+    transform:translateX(-50%);border-width:7px;
+  }
+  .scene.mobile-column .display-label,.scene.mobile-column .display-foot{font-size:8px;letter-spacing:.07em}
+  .scene.mobile-column.observatory-mode .scene-stage .moon-wrap{
+    left:50%;top:calc(clamp(178px,24svh,255px) + clamp(190px,35svh,350px) * .48);
+    transform:translate(-50%,-50%) scale(1);
+  }
+  .scene.mobile-column.observatory-mode .scene-stage .moon{
+    width:clamp(93px,27vw,160px);
+  }
+  .scene.mobile-column.observatory-mode .scene-stage .floor{
+    height:clamp(170px,27svh,280px);
+  }
+  .scene.mobile-column.observatory-mode .scene-stage .desk{
+    width:min(77vw,390px);height:clamp(50px,8svh,83px);
+    left:50%;right:auto;bottom:clamp(42px,10svh,110px);
+    transform:translateX(-50%) skewX(-2deg);
+    border-radius:10px;
+  }
+  .scene.mobile-column.observatory-mode .scene-stage .desk-screen{
+    height:clamp(100px,23svh,230px);
+    left:4%;width:92%;bottom:100%;
+    border-width:5px;border-bottom-width:9px;border-radius:10px 10px 5px 5px;
+  }
+  .scene.mobile-column .terminal-header{font-size:clamp(6px,1.7vw,9px)}
+  .scene.mobile-column.observatory-mode .scene-stage .workstation-hotspot{
+    left:50%;right:auto;bottom:clamp(36px,9svh,105px);
+    width:min(84vw,425px);height:clamp(170px,32svh,290px);
+    transform:translateX(-50%);
+  }
+  .scene.mobile-column .dome-light{opacity:.65}
+}
+@media(max-width:760px) and (max-height:620px){
+  .scene.mobile-column .dome-display,
+  .scene.mobile-column.observatory-mode .scene-stage .dome-display{top:130px;height:190px}
+  .scene.mobile-column.observatory-mode .scene-stage .moon-wrap{top:224px}
+  .scene.mobile-column.observatory-mode .scene-stage .desk{bottom:20px}
+  .scene.mobile-column.observatory-mode .scene-stage .desk-screen{height:95px}
+  .scene.mobile-column.observatory-mode .scene-stage .workstation-hotspot{bottom:15px;height:175px}
+}
