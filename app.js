@@ -322,3 +322,17 @@ reportHour.addEventListener('change',renderReport);
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&reportPanel.classList.contains('show'))closeWorkstation()});
 initializeReport();
 loadCurrentNASA();
+
+// Scale the entire observatory as a single 1600×900 composition.
+// Contain mode deliberately preserves every object's relative position and shape.
+function fitObservatoryStage(){
+  const stage=$('sceneStage');
+  if(!stage)return;
+  const viewportWidth=scene.clientWidth||window.innerWidth;
+  const viewportHeight=scene.clientHeight||window.innerHeight;
+  const scale=Math.min(viewportWidth/1600,viewportHeight/900);
+  stage.style.setProperty('--stage-scale',String(Math.max(.05,scale)));
+}
+window.addEventListener('resize',fitObservatoryStage,{passive:true});
+window.addEventListener('orientationchange',fitObservatoryStage,{passive:true});
+fitObservatoryStage();
