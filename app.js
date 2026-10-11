@@ -21,19 +21,66 @@ function lunarData(date=new Date()){
   else name='Waning Crescent';
   return{age,lit,waxing,name};
 }
+let currentNASARecord=null;
+function illuminatedPhaseName(illum,age){
+  const waxing=age<14.77;
+  if(illum<1.5)return 'New Moon';
+  if(illum>98.5)return 'Full Moon';
+  if(Math.abs(illum-50)<1.5)return waxing?'First Quarter':'Last Quarter';
+  return (waxing?'Waxing ':'Waning ')+(illum<50?'Crescent':'Gibbous');
+}
+/* Project the illuminated hemisphere onto a disk; a curved terminator, not a linear fade.
+   Phase fraction is illuminated area of the lunar disk, 0 = new, 1 = full. */
+function lunarShadowPath(fraction,waxing){
+  const f=Math.max(0,Math.min(1,Number(fraction)));
+  if(f>=.9999)return '';
+  if(f<=.0001)return '<circle cx="50" cy="50" r="50" fill="#020408" fill-opacity=".98"/>';
+  const outer=[],terminator=[];
+  for(let i=0;i<=80;i++){
+    const y=-1+2*i/80;
+    const radius=Math.sqrt(Math.max(0,1-y*y));
+    const darkSide=waxing?-1:1;
+    const terminatorX=(waxing?1-2*f:2*f-1)*radius;
+    outer.push((50+49*darkSide*radius).toFixed(2)+','+(50+49*y).toFixed(2));
+    terminator.push((50+49*terminatorX).toFixed(2)+','+(50+49*y).toFixed(2));
+  }
+  return '<path d="M'+outer.join(' L')+' L'+terminator.reverse().join(' L')+' Z" fill="#020408" fill-opacity=".97"/>';
+}
+function setMoonShadow(target,fraction,waxing){
+  target.style.background='none';
+  target.innerHTML='<svg viewBox="0 0 100 100" width="100%" height="100%" preserveAspectRatio="none" aria-hidden="true">'+lunarShadowPath(fraction,waxing)+'</svg>';
+}
 function renderMoon(){
-  const m=lunarData(),pct=Math.round(m.lit*100);
-  phaseName.textContent=m.name;illumination.textContent=pct+'%';$('topSummary').textContent=m.name+' · '+pct+'%';
-  $('panelPhase').textContent=m.name;$('panelIllum').textContent=pct+'%';$('panelAge').textContent=m.age.toFixed(1)+' days';
-  const k=Math.cos(m.age/29.530588853*2*Math.PI);
-  const side=m.waxing?'right':'left';
-  const dark=1-m.lit;
-  let gradient;
-  if(pct<=2)gradient='rgba(3,5,8,.96)';
-  else if(pct>=98)gradient='rgba(0,0,0,0)';
-  else if(m.waxing) gradient=`linear-gradient(90deg,rgba(2,4,7,${Math.min(.98,dark*1.45)}) 0%,rgba(2,4,7,${Math.min(.92,dark)}) ${Math.max(5,50-m.lit*35)}%,rgba(0,0,0,0) ${Math.min(95,52+m.lit*42)}%)`;
-  else gradient=`linear-gradient(270deg,rgba(2,4,7,${Math.min(.98,dark*1.45)}) 0%,rgba(2,4,7,${Math.min(.92,dark)}) ${Math.max(5,50-m.lit*35)}%,rgba(0,0,0,0) ${Math.min(95,52+m.lit*42)}%)`;
-  moonShadow.style.background=gradient;
+  const m=lunarData(),record=currentNASARecord;
+  const pct=record?Number(record.phase):m.lit*100;
+  const age=record?Number(record.age):m.age;
+  const waxing=age<14.77;
+  const name=record?illuminatedPhaseName(pct,age):m.name;
+  phaseName.textContent=name;
+  illumination.textContent=Math.round(pct)+'%';
+  $('topSummary').textContent=name+' · '+Math.round(pct)+'%';
+  $('panelPhase').textContent=name;
+  $('panelIllum').textContent=pct.toFixed(1)+'%';
+  $('panelAge').textContent=age.toFixed(2)+' days';
+  $('panelDistance').textContent=record?Math.round(Number(record.distance)).toLocaleString('en-US')+' km':'NASA data unavailable';
+  setMoonShadow(moonShadow,pct/100,waxing);
+}
+async function loadCurrentNASA(){
+  const now=new Date(),year=now.getUTCFullYear();
+  if(archiveYear===year&&archiveRecords){
+    const i=reportIndex(year,now.getUTCMonth(),now.getUTCDate(),now.getUTCHours());
+    currentNASARecord=archiveRecords[i]||null;renderMoon();return;
+  }
+  try{
+    const response=await fetch('data/moon/'+year+'.json');
+    if(!response.ok)throw Error('NASA archive unavailable');
+    const rows=await response.json();
+    const expected=(Date.UTC(year+1,0,1)-Date.UTC(year,0,1))/3600000;
+    if(!Array.isArray(rows)||rows.length<expected)throw Error('Incomplete archive');
+    const i=Math.floor((Date.now()-Date.UTC(year,0,1))/3600000);
+    currentNASARecord=rows[i]||null;
+    renderMoon();
+  }catch{currentNASARecord=null;renderMoon()}
 }
 function weatherKind(data){
   const code=Number(data?.weather_code??0),rain=Math.max(0,Number(data?.precipitation_mm||0),Number(data?.rain_mm||0)+Number(data?.showers_mm||0));
@@ -90,8 +137,8 @@ countrySelect.addEventListener('change',populateLocations);
 $('applyLocation').addEventListener('click',()=>{const loc=selectedLocation();localStorage.setItem('themoonCountry',countrySelect.value);localStorage.setItem('themoonLocation',loc.id);panelToggle($('locationPanel'),false);loadWeather()});
 $('infoChangeLocation').addEventListener('click',()=>{panelToggle($('infoPanel'),false);panelToggle($('locationPanel'),true)});
 $('infoOpenWorkstation').addEventListener('click',openWorkstation);
-renderMoon();loadCatalog().then(loadWeather);
-setInterval(renderMoon,10*60*1000);
+renderMoon();loadCurrentNASA();loadCatalog().then(loadWeather);
+setInterval(loadCurrentNASA,60*60*1000);
 
 /* One-year-at-a-time NASA SVS workstation archive. */
 const reportYear=$('reportYear'),reportMonth=$('reportMonth'),reportDay=$('reportDay'),reportHour=$('reportHour');
@@ -200,23 +247,9 @@ function illuminationStyle(illum,waxing){
 }
 function updateReportVisualization(row,prev,next){
   const name=reportPhaseName(row,prev,next),illum=Number(row.phase);
-  const waxing=next&&prev?Number(next.phase)>=Number(prev.phase):Number(row.age)<14.77;
-  const orb=$('reportOrb'),shadow=$('reportOrbShadow');
-  const side=waxing?'right':'left';
-  orb.style.setProperty('--light-side',side);
-  // SVG terminator path is built from the illumination fraction; not a linear gradient.
-  const r=49,k=Math.abs(1-2*illum/100);
-  const phase=illum/100;
-
-  const sweep=phase<=.5?1:0;
-
-
-  const path= waxing
-    ? `M50 1 A49 49 0 0 1 50 99 A${Math.max(.01,k*r)} 49 0 0 ${sweep} 50 1 Z`
-    : `M50 1 A49 49 0 0 0 50 99 A${Math.max(.01,k*r)} 49 0 0 ${sweep?0:1} 50 1 Z`;
-  // Use masked SVG filled disk for the approximate earth-facing illuminated silhouette.
-  const svg= `<svg viewBox="0 0 100 100" aria-hidden="true"><defs><clipPath id="visualMoonClip"><circle cx="50" cy="50" r="49"/></clipPath></defs><circle cx="50" cy="50" r="49" fill="#101925"/><path d="${path}" fill="#cdd6dd" clip-path="url(#visualMoonClip)"/></svg>`;
-  shadow.innerHTML=svg;
+  const waxing=Number(row.age)<14.77;
+  setMoonShadow($('reportOrbShadow'),illum/100,waxing);
+  $('reportOrb').style.background='radial-gradient(circle at 38% 34%,#f2f1e8,#c7ccd0 65%,#808e99)';
   $('reportVisualPhase').textContent=name;
   $('reportVisualNote').textContent=illum.toFixed(1)+'% illuminated · '+(waxing?'waxing':'waning')+' · '+Number(row.age).toFixed(2)+' days since new Moon';
 }
