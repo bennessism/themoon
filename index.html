@@ -10,6 +10,7 @@
 <body>
 <main id="app">
   <section id="scene" class="scene observatory-mode" aria-label="Moon observatory">
+    <div id="sceneStage" class="scene-stage" aria-label="Lunar dome interactive stage">
     <div class="sky">
       <div class="stars" aria-hidden="true"></div>
       <div class="clouds" aria-hidden="true"></div>
@@ -27,12 +28,9 @@
       <div class="dome-shell" aria-hidden="true"><div class="dome-ribs"></div><div class="dome-light"></div></div>
       <div class="dome-display" aria-hidden="true"><div class="display-arc"></div><span class="display-label">LUNAR SURFACE · MONITOR</span><span class="display-foot">GEOCENTRIC PHASE VIEW</span></div>
       <div class="floor"></div>
-      <div class="desk" aria-hidden="true"><span class="desk-screen"><span class="work-screen-content"><span class="terminal-header">LUNAR SYSTEM // ONLINE</span><span class="terminal-grid"></span><span class="terminal-lines"></span><span class="terminal-cursor"></span></span><span class="screen-glitch"></span></span><span class="computer-base"><i class="activity-led"></i><i class="power-led"></i></span></div>
+      <div class="desk" aria-hidden="true"><span class="desk-screen"><span class="work-screen-content"><span class="terminal-header">LUNAR SYSTEM // ONLINE</span><span class="terminal-grid"></span><span class="terminal-lines"></span><span class="terminal-cursor"></span></span><span class="screen-glitch"></span></span></div>
       <div class="mounted-scope" aria-hidden="true">
         <span class="scope-body"><span class="scope-highlight"></span><span class="scope-band band-a"></span><span class="scope-band band-b"></span></span>
-        <span class="scope-front"></span><span class="scope-back"></span>
-        <span class="finder-tube"></span><span class="finder-bracket"></span>
-        <span class="scope-focuser"></span><span class="scope-diagonal"></span><span class="scope-eyepiece"></span>
         <span class="scope-saddle"></span><span class="scope-mount"></span><span class="scope-axis"></span>
         <span class="scope-counterweight"></span><span class="scope-pier"></span><span class="scope-pier-foot"></span>
       </div>
@@ -46,14 +44,16 @@
       <div class="eyepiece-vignette"></div>
     </div>
 
+    </div><!-- fixed-resolution scene stage -->
+
     <header class="topbar">
       <div class="brand-group">
         <h1>The Moon</h1>
         <p id="viewLabel">Lunar Monitoring Dome</p>
+        <button id="infoBtn" class="summary-chip" type="button" aria-expanded="false" aria-controls="infoPanel" aria-label="Moon information and viewing location">
+          <span id="locationLabel">Loading location…</span><span class="summary-separator" aria-hidden="true">·</span><span id="topSummary">Moon information</span><span class="summary-caret" aria-hidden="true">⌄</span>
+        </button>
       </div>
-      <button id="infoBtn" class="summary-chip" type="button" aria-expanded="false" aria-controls="infoPanel" aria-label="Moon information and viewing location">
-        <span id="locationLabel">Loading location…</span><span class="summary-separator" aria-hidden="true">·</span><span id="topSummary">Moon information</span><span class="summary-caret" aria-hidden="true">⌄</span>
-      </button>
     </header>
 
     <button id="sceneToggle" class="scene-toggle back-to-dome" type="button" aria-label="Back to dome"><span id="tapHint">← Back to dome</span></button>
