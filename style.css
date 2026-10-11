@@ -175,3 +175,58 @@
  .calendar-day small{font-size:8px}
  .report-graph,.report-calendar-wrap{padding:12px}
 }
+
+
+/* Clean computer, telescope optics, and upper-left Window-style area selector */
+.area-dock{position:absolute;z-index:27;top:max(82px,calc(env(safe-area-inset-top) + 69px));left:max(20px,3vw);max-width:min(390px,calc(100% - 40px))}
+.area-dock .location-btn{width:auto;max-width:100%;padding:8px 12px;min-height:38px;background:#101822e8;box-shadow:0 8px 24px #0007}
+.location-panel{top:max(126px,calc(env(safe-area-inset-top) + 116px));bottom:auto;left:max(20px,3vw);right:auto;max-height:calc(100svh - 148px)}
+.bottom{justify-content:flex-end}
+.observatory-mode .desk{left:10%;bottom:15%;width:27%;height:10%;border-top:2px solid #465d70;background:linear-gradient(180deg,#273e4d,#142231);border-radius:10px 10px 5px 5px;box-shadow:0 18px 0 -8px #0b131d,0 25px 33px #000b;transform:skewX(-3deg)}
+.observatory-mode .desk-screen{position:absolute;left:3%;bottom:100%;width:93%;height:clamp(94px,17vh,159px);overflow:hidden;border:7px solid #263644;border-bottom-width:12px;border-radius:10px 10px 5px 5px;background:linear-gradient(115deg,#050d14,#102336);box-shadow:0 0 0 1px #718d9a42,0 0 27px #4b83a12b,inset 0 0 20px #0009}
+.observatory-mode .desk-screen:after{content:none}
+.work-screen-content{position:absolute;inset:0;overflow:hidden;color:#8bbfd3;background:repeating-linear-gradient(0deg,#68aac20b 0 1px,transparent 1px 5px),linear-gradient(135deg,#091824,#0f2935);font-family:ui-monospace,SFMono-Regular,Consolas,monospace}
+.terminal-header{position:absolute;left:9%;top:14%;font-size:clamp(7px,.7vw,10px);letter-spacing:.12em;white-space:nowrap}
+.terminal-grid{position:absolute;left:9%;right:12%;top:35%;bottom:19%;background:repeating-linear-gradient(90deg,transparent 0 19%,#6da0b32b 19.4% 19.8%,transparent 20.2%),repeating-linear-gradient(0deg,transparent 0 22%,#6da0b32b 22.4% 23%,transparent 23.5%);border-left:1px solid #51788c78;border-bottom:1px solid #51788c78;opacity:.75}
+.terminal-lines{position:absolute;left:15%;top:48%;width:67%;height:20%;border-top:2px solid #b0d6dd8c;border-radius:48% 42% 0 0;transform:skewY(-10deg);box-shadow:0 -4px 15px #81aaca44}
+.terminal-cursor{position:absolute;left:9%;bottom:9%;height:3px;width:13%;background:#8ac5ce;animation:terminalBlink 1.8s steps(1) infinite}
+.screen-glitch{position:absolute;inset:0;pointer-events:none;opacity:0;background:linear-gradient(180deg,transparent 16%,#b4f1ff4f 17%,transparent 19%,transparent 61%,#c7e8ff42 62%,transparent 66%);animation:screenInterference 11s steps(1,end) infinite}
+@keyframes terminalBlink{50%{opacity:.12}}
+@keyframes screenInterference{0%,93%,95%,97%,100%{opacity:0;transform:translateX(0)}94%{opacity:.48;transform:translateX(4px)}96%{opacity:.32;transform:translateX(-3px)}98%{opacity:.2;transform:translateX(2px)}}
+.computer-base{position:absolute;right:6%;bottom:18%;width:17%;height:30%;border:2px solid #536576;border-radius:4px;background:linear-gradient(130deg,#202d39,#09121d);box-shadow:4px 4px 12px #0009}
+.activity-led,.power-led{position:absolute;bottom:13%;width:5px;height:5px;border-radius:50%}
+.activity-led{right:14%;background:#ff4639;box-shadow:0 0 7px 2px #d9292677;animation:driveActivity 3.5s steps(1,end) infinite}
+.power-led{right:45%;background:#76c5d2;box-shadow:0 0 7px #76c5d288}
+@keyframes driveActivity{0%,18%,45%,75%,100%{opacity:.9}19%,23%,50%,53%,80%,83%{opacity:.15}}
+.observatory-mode .mounted-scope{right:10%;bottom:15%;width:32%;height:40%;filter:drop-shadow(0 18px 17px #000b)}
+.observatory-mode .scope-body{position:absolute;left:12%;top:17%;width:78%;height:21%;border-radius:40px 15px 15px 40px;background:linear-gradient(180deg,#839dab 0%,#384e60 15%,#132334 48%,#07121d 82%,#536d7c 100%);border:3px solid #829eae;transform:rotate(-22deg);box-shadow:0 4px 12px #0009,inset 0 2px 4px #def6ff55}
+.observatory-mode .scope-body:before{content:none}
+.scope-highlight{position:absolute;left:11%;right:8%;top:17%;height:8%;border-radius:20px;background:#b1c8d46b}
+.scope-back,.scope-front{position:absolute;z-index:2;border-radius:50%;border:5px solid #869dac;background:radial-gradient(ellipse at 35% 32%,#27455a,#030a10 64%);box-shadow:inset 0 0 0 3px #111e2b,0 0 13px #a4c6df40}
+.scope-back{left:11%;top:32%;width:17%;aspect-ratio:1;transform:rotate(-22deg)}
+.scope-front{right:8%;top:6%;width:14%;aspect-ratio:1;transform:rotate(-22deg)}
+.scope-focuser{position:absolute;left:44%;top:32%;width:11%;height:10%;background:linear-gradient(90deg,#182e3f,#8299a8,#111d29);border:2px solid #4c6c7e;border-radius:5px;transform:rotate(-25deg)}
+.scope-mount{position:absolute;left:46%;top:43%;width:14%;height:12%;background:linear-gradient(90deg,#152230,#617e91,#101a27);border:2px solid #617f91;border-radius:7px;box-shadow:0 3px 8px #0008}
+.scope-axis{position:absolute;left:52%;top:53%;width:5px;height:12%;background:#718e9b}
+.observatory-mode .scope-leg{position:absolute;top:62%;width:clamp(4px,.5vw,8px);height:38%;background:linear-gradient(90deg,#111d29,#7895a7,#111d29);transform-origin:top}
+.observatory-mode .scope-leg.l1{left:52%;transform:rotate(20deg)}
+.observatory-mode .scope-leg.l2{left:52%;transform:rotate(-22deg)}
+.observatory-mode .scope-leg.l3{left:52%;height:34%;transform:rotate(0deg)}
+.workstation-hotspot{left:9%;bottom:14%;width:30%;height:35%}
+.telescope-hotspot{right:8%;bottom:15%;width:37%;height:43%}
+@media(max-width:680px){
+ .area-dock{top:max(98px,calc(env(safe-area-inset-top) + 92px));left:17px;max-width:calc(100% - 34px)}
+ .area-dock .location-btn{min-height:36px;font-size:11px}
+ .location-panel{top:max(144px,calc(env(safe-area-inset-top) + 135px));bottom:auto;left:13px;max-height:calc(100svh - 158px)}
+ .bottom{flex-direction:row;align-items:flex-end;justify-content:flex-end}
+ .moon-summary{max-width:62vw;text-align:right}
+ .observatory-mode .desk{left:4%;bottom:25%;width:40%}
+ .observatory-mode .desk-screen{height:clamp(76px,12vh,105px);border-width:4px;border-bottom-width:8px}
+ .terminal-header{font-size:6px}
+ .observatory-mode .mounted-scope{right:3%;bottom:25%;width:42%;height:29%}
+ .scope-back,.scope-front{border-width:3px}
+ .workstation-hotspot{left:3%;bottom:24%;width:43%;height:31%}
+ .telescope-hotspot{right:3%;bottom:24%;width:45%;height:34%}
+ .computer-base{width:16%}
+}
+@media(prefers-reduced-motion:reduce){.screen-glitch,.activity-led,.terminal-cursor{animation:none!important}.screen-glitch{opacity:0}}
