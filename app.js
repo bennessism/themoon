@@ -1,5 +1,5 @@
 const $=id=>document.getElementById(id);
-const scene=$('scene'),moonShadow=$('moonShadow'),phaseName=$('phaseName'),illumination=$('illumination'),weatherLabel=$('weatherLabel'),locationLabel=$('locationLabel');
+const scene=$('scene'),moonShadow=$('moonShadow'),weatherLabel=$('panelWeather'),locationLabel=$('locationLabel');
 const countrySelect=$('countrySelect'),locationSelect=$('locationSelect');
 let roomView=true,catalog=null,currentWeather=null;
 
@@ -56,8 +56,6 @@ function renderMoon(){
   const age=record?Number(record.age):m.age;
   const waxing=age<14.77;
   const name=record?illuminatedPhaseName(pct,age):m.name;
-  phaseName.textContent=name;
-  illumination.textContent=Math.round(pct)+'%';
   $('topSummary').textContent=name+' · '+Math.round(pct)+'%';
   $('panelPhase').textContent=name;
   $('panelIllum').textContent=pct.toFixed(1)+'%';
@@ -93,7 +91,7 @@ function applyWeather(data){
   currentWeather=data;
   scene.classList.remove('clear','cloudy','rainy','stormy');
   const [kind,label]=weatherKind(data);scene.classList.add(kind);
-  weatherLabel.textContent=label;$('panelWeather').textContent=label;
+  weatherLabel.textContent=label;
 }
 function labelFor(loc){return loc.city&&loc.city!==loc.name?`${loc.name} · ${loc.city}`:loc.name}
 async function loadCatalog(){
@@ -113,11 +111,11 @@ function populateLocations(){
 }
 function selectedLocation(){const c=catalog.countries[countrySelect.value];return c.locations.find(l=>l.id===locationSelect.value)||c.locations[0]}
 async function loadWeather(){
-  const loc=selectedLocation();locationLabel.textContent=labelFor(loc);
+  const loc=selectedLocation();locationLabel.textContent=labelFor(loc);$('panelLocation').textContent=labelFor(loc);
   try{
     const p=await fetch(`https://raw.githubusercontent.com/bennessism/window/main/weather/data/${countrySelect.value}.json`,{cache:'no-store'}).then(r=>{if(!r.ok)throw Error();return r.json()});
     applyWeather(p.locations?.[loc.id]||{weather_code:0});
-  }catch{applyWeather({weather_code:0});weatherLabel.textContent='Weather unavailable';$('panelWeather').textContent='Unavailable'}
+  }catch{applyWeather({weather_code:0});weatherLabel.textContent='Weather unavailable'}
 }
 function setRoomView(next){
   roomView=next;scene.classList.toggle('observatory-mode',roomView);scene.classList.toggle('telescope-mode',!roomView);
@@ -125,18 +123,37 @@ function setRoomView(next){
   $('tapHint').textContent='← Back to dome';
   $('sceneToggle').setAttribute('aria-label','Back to dome');
 }
-function panelToggle(panel,show){panel.classList.toggle('show',show);panel.setAttribute('aria-hidden',String(!show));if(panel.id==='infoPanel')$('infoBtn').setAttribute('aria-expanded',String(show))}
+function panelToggle(panel,show){
+  panel.classList.toggle('show',show);
+  panel.setAttribute('aria-hidden',String(!show));
+  if(panel.id==='infoPanel')$('infoBtn').setAttribute('aria-expanded',String(show));
+}
+function toggleLocationFields(show){
+  const fields=$('locationFields');
+  fields.hidden=!show;
+  $('infoChangeLocation').setAttribute('aria-expanded',String(show));
+}
 $('sceneToggle').addEventListener('click',()=>setRoomView(true));
-$('telescopeBtn').addEventListener('click',()=>{closeWorkstation();panelToggle($('infoPanel'),false);panelToggle($('locationPanel'),false);setRoomView(false)});
+$('telescopeBtn').addEventListener('click',()=>{
+  closeWorkstation();panelToggle($('infoPanel'),false);setRoomView(false);
+});
 $('workstationBtn').addEventListener('click',openWorkstation);
-$('infoBtn').addEventListener('click',()=>{const opening=!$('infoPanel').classList.contains('show');panelToggle($('locationPanel'),false);panelToggle($('infoPanel'),opening)});
-$('infoClose').addEventListener('click',()=>panelToggle($('infoPanel'),false));
-$('locationBtn').addEventListener('click',()=>{panelToggle($('infoPanel'),false);panelToggle($('locationPanel'),!$('locationPanel').classList.contains('show'))});
-$('locationClose').addEventListener('click',()=>panelToggle($('locationPanel'),false));
-countrySelect.addEventListener('change',populateLocations);
-$('applyLocation').addEventListener('click',()=>{const loc=selectedLocation();localStorage.setItem('themoonCountry',countrySelect.value);localStorage.setItem('themoonLocation',loc.id);panelToggle($('locationPanel'),false);loadWeather()});
-$('infoChangeLocation').addEventListener('click',()=>{panelToggle($('infoPanel'),false);panelToggle($('locationPanel'),true)});
+$('infoBtn').addEventListener('click',()=>{
+  const opening=!$('infoPanel').classList.contains('show');
+  panelToggle($('infoPanel'),opening);
+  if(!opening)toggleLocationFields(false);
+});
+$('infoClose').addEventListener('click',()=>{panelToggle($('infoPanel'),false);toggleLocationFields(false)});
+$('infoChangeLocation').addEventListener('click',()=>toggleLocationFields($('locationFields').hidden));
 $('infoOpenWorkstation').addEventListener('click',openWorkstation);
+countrySelect.addEventListener('change',populateLocations);
+$('applyLocation').addEventListener('click',()=>{
+  const loc=selectedLocation();
+  localStorage.setItem('themoonCountry',countrySelect.value);
+  localStorage.setItem('themoonLocation',loc.id);
+  toggleLocationFields(false);
+  loadWeather();
+});
 renderMoon();loadCatalog().then(loadWeather);
 setInterval(loadCurrentNASA,60*60*1000);
 
@@ -290,7 +307,7 @@ function updateMonthlyVisualization(year,month,records){
 }
 function openWorkstation(){
   setRoomView(true);
-  panelToggle($('infoPanel'),false);panelToggle($('locationPanel'),false);
+  panelToggle($('infoPanel'),false);toggleLocationFields(false);
   panelToggle(reportPanel,true);
   loadReportYear();
   reportYear.focus();
