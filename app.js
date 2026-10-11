@@ -122,6 +122,7 @@ function setRoomView(next){
   $('viewLabel').textContent=roomView?'Lunar Monitoring Dome':'Telescope View';
   $('tapHint').textContent='← Back to dome';
   $('sceneToggle').setAttribute('aria-label','Back to dome');
+  if(!roomView && scene.classList.contains('mobile-pan'))centerLunarPanorama();
 }
 function panelToggle(panel,show){
   panel.classList.toggle('show',show);
@@ -323,15 +324,37 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&reportPanel.classLi
 initializeReport();
 loadCurrentNASA();
 
-// Scale the entire observatory as a single 1600×900 composition.
-// Contain mode deliberately preserves every object's relative position and shape.
+// Keep every physical room object at the same 1600x900 coordinates.
+// Desktop: fit the complete composition. Portrait phone: height-fit,
+// then browse the exact same composition with native horizontal scrolling.
+let wasMobilePan=false;
+function centerLunarPanorama(){
+  const viewport=$('stageViewport');
+  if(viewport && scene.classList.contains('mobile-pan')){
+    viewport.scrollTo({left:Math.max(0,(viewport.scrollWidth-viewport.clientWidth)/2),behavior:'smooth'});
+  }
+}
 function fitObservatoryStage(){
-  const stage=$('sceneStage');
-  if(!stage)return;
-  const viewportWidth=scene.clientWidth||window.innerWidth;
-  const viewportHeight=scene.clientHeight||window.innerHeight;
-  const scale=Math.min(viewportWidth/1600,viewportHeight/900);
+  const stage=$('sceneStage'),viewport=$('stageViewport'),spacer=$('stageSpacer');
+  if(!stage||!viewport||!spacer)return;
+  const width=scene.clientWidth||window.innerWidth;
+  const height=scene.clientHeight||window.innerHeight;
+  const mobile=window.matchMedia('(max-width: 760px) and (orientation: portrait)').matches;
+  const previousWidth=spacer.getBoundingClientRect().width;
+  const oldCenter=wasMobilePan&&previousWidth>0
+    ?(viewport.scrollLeft+viewport.clientWidth/2)/previousWidth:.5;
+  const scale=mobile?height/900:Math.min(width/1600,height/900);
   stage.style.setProperty('--stage-scale',String(Math.max(.05,scale)));
+  scene.classList.toggle('mobile-pan',mobile);
+  spacer.style.width=mobile?Math.ceil(1600*scale)+'px':'100%';
+  spacer.style.height=mobile?Math.ceil(900*scale)+'px':'100%';
+  if(mobile){
+    const target=Math.max(0,(1600*scale)*oldCenter-width/2);
+    viewport.scrollLeft=target;
+  }else{
+    viewport.scrollLeft=0;
+  }
+  wasMobilePan=mobile;
 }
 window.addEventListener('resize',fitObservatoryStage,{passive:true});
 window.addEventListener('orientationchange',fitObservatoryStage,{passive:true});
