@@ -23,16 +23,15 @@
       </div>
     </div>
 
-    <div class="observatory" aria-hidden="true">
-      <div class="roof roof-left"></div>
-      <div class="roof roof-right"></div>
-      <div class="hatch-frame"></div>
+    <div class="observatory">
+      <div class="dome-shell" aria-hidden="true"><div class="dome-ribs"></div><div class="dome-light"></div></div>
+      <div class="dome-display" aria-hidden="true"><div class="display-arc"></div><span class="display-label">LUNAR SURFACE · MONITOR</span><span class="display-foot">GEOCENTRIC PHASE VIEW</span></div>
       <div class="floor"></div>
       <div class="desk"><span class="lamp"></span><span class="chart"></span><span class="desk-screen"><span class="screen-moon"></span><span class="screen-bars"></span></span></div>
       <div class="mounted-scope"><span class="scope-body"></span><span class="scope-leg l1"></span><span class="scope-leg l2"></span></div>
       <div class="console"><i></i><i></i><i></i></div>
-      <button id="workstationBtn" class="equipment-hotspot workstation-hotspot" type="button" aria-label="Open Moon workstation"><span>▤ Moon Workstation</span></button>
-      <button id="telescopeBtn" class="equipment-hotspot telescope-hotspot" type="button" aria-label="Look through telescope"><span>◉ Telescope</span></button>
+      <button id="workstationBtn" class="equipment-hotspot workstation-hotspot" type="button" aria-label="Open Moon workstation"><span class="sr-only">Open Moon Workstation</span></button>
+      <button id="telescopeBtn" class="equipment-hotspot telescope-hotspot" type="button" aria-label="Look through telescope"><span class="sr-only">Look through telescope</span></button>
     </div>
 
     <div class="eyepiece" aria-hidden="true">
@@ -45,7 +44,7 @@
         <h1>The Moon</h1>
         <p id="viewLabel">Lunar Monitoring Dome</p>
       </div>
-      <button id="infoBtn" class="round-btn" type="button" aria-label="Moon information">i</button>
+      <button id="infoBtn" class="summary-chip" type="button" aria-expanded="false" aria-label="Open Moon summary"><span id="topSummary">Moon information</span><span aria-hidden="true">⌄</span></button>
     </header>
 
     <button id="sceneToggle" class="scene-toggle back-to-dome" type="button" aria-label="Back to dome"><span id="tapHint">← Back to dome</span></button>
@@ -60,7 +59,7 @@
 
     <aside id="infoPanel" class="panel" aria-hidden="true">
       <button id="infoClose" class="panel-close" type="button" aria-label="Close">×</button>
-      <div class="eyebrow">Moon now</div>
+      <div class="eyebrow">Moon now · Observation summary</div>
       <h2 id="panelPhase">—</h2>
       <div class="facts">
         <div><span>Illumination</span><strong id="panelIllum">—</strong></div>
@@ -68,7 +67,7 @@
         <div><span>Distance</span><strong id="panelDistance">Reference pending</strong></div>
         <div><span>Weather</span><strong id="panelWeather">—</strong></div>
       </div>
-      <p class="source-note">Phase display is currently calculated locally. The app structure is prepared for the cached NASA Goddard / LRO yearly Moon dataset.</p>
+      <div class="panel-actions"><button type="button" id="infoChangeLocation">Change location</button><button type="button" id="infoOpenWorkstation">Open workstation</button></div><p class="source-note">Current Moon phase is an approximation; NASA archival measurements are available in the workstation.</p>
     </aside>
 
     <section id="workstationPanel" class="workstation-panel" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="workstationTitle">
@@ -86,6 +85,9 @@
       <p id="reportStatus" class="report-status" role="status" aria-live="polite">Select a date to load NASA observations.</p>
       <div id="reportContent" hidden>
         <div class="report-date-row"><h3 id="reportDate">—</h3><span id="reportPhase">—</span></div>
+        <div class="report-visual"><div class="phase-orb" id="reportOrb" role="img" aria-label="Moon phase preview"><div id="reportOrbShadow" class="phase-orb-shadow"></div></div><div class="report-visual-copy"><span class="eyebrow">Selected hour · NASA lunar archive</span><strong id="reportVisualPhase">—</strong><span id="reportVisualNote">Choose a date to inspect the lunar phase.</span></div></div>
+        <div class="report-graph"><div class="report-section-head"><h3>Monthly illumination</h3><span>Daily noon UTC · percent illuminated</span></div><div id="reportChart" class="report-chart" role="img" aria-label="Illumination trend for selected month"></div></div>
+        <div class="report-calendar-wrap"><div class="report-section-head"><h3>Monthly lunar calendar</h3><span>12:00 UTC snapshots · select a day</span></div><div class="calendar-days" aria-hidden="true"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div><div id="reportCalendar" class="report-calendar"></div></div>
         <div class="report-metrics">
           <div><span>Illumination</span><strong id="reportIllum">—</strong></div>
           <div><span>Lunar age</span><strong id="reportAge">—</strong></div>
@@ -103,7 +105,7 @@
     <aside id="locationPanel" class="panel location-panel" aria-hidden="true">
       <button id="locationClose" class="panel-close" type="button" aria-label="Close">×</button>
       <div class="eyebrow">Viewing place</div>
-      <h2>Choose location</h2>
+      <h2>Viewing location</h2><p class="picker-description">Choose where you are observing from. Local weather updates for your selected place.</p>
       <label>Country<select id="countrySelect"></select></label>
       <label>Location<select id="locationSelect"></select></label>
       <button id="applyLocation" class="apply-btn" type="button">Use location</button>
