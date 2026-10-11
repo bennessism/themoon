@@ -1,0 +1,66 @@
+{
+  "2019": {
+    "source_page": "https://svs.gsfc.nasa.gov/4442",
+    "source_json": "https://svs.gsfc.nasa.gov/vis/a000000/a004400/a004442/mooninfo_2019.json",
+    "records": 8760,
+    "reference": "NASA SVS",
+    "timezone": "UTC",
+    "type": "geocentric"
+  },
+  "2020": {
+    "source_page": "https://svs.gsfc.nasa.gov/4768",
+    "source_json": "https://svs.gsfc.nasa.gov/vis/a000000/a004700/a004768/mooninfo_2020.json",
+    "records": 8785,
+    "reference": "NASA SVS",
+    "timezone": "UTC",
+    "type": "geocentric"
+  },
+  "2021": {
+    "source_page": "https://svs.gsfc.nasa.gov/4874",
+    "source_json": "https://svs.gsfc.nasa.gov/vis/a000000/a004800/a004874/mooninfo_2021.json",
+    "records": 8760,
+    "reference": "NASA SVS",
+    "timezone": "UTC",
+    "type": "geocentric"
+  },
+  "2022": {
+    "source_page": "https://svs.gsfc.nasa.gov/4955",
+    "source_json": "https://svs.gsfc.nasa.gov/vis/a000000/a004900/a004955/mooninfo_2022.json",
+    "records": 8760,
+    "reference": "NASA SVS",
+    "timezone": "UTC",
+    "type": "geocentric"
+  },
+  "2023": {
+    "source_page": "https://svs.gsfc.nasa.gov/5048",
+    "source_json": "https://svs.gsfc.nasa.gov/vis/a000000/a005000/a005048/mooninfo_2023.json",
+    "records": 8760,
+    "reference": "NASA SVS",
+    "timezone": "UTC",
+    "type": "geocentric"
+  },
+  "2024": {
+    "source_page": "https://svs.gsfc.nasa.gov/5187",
+    "source_json": "https://svs.gsfc.nasa.gov/vis/a000000/a005100/a005187/mooninfo_2024.json",
+    "records": 8785,
+    "reference": "NASA SVS",
+    "timezone": "UTC",
+    "type": "geocentric"
+  },
+  "2025": {
+    "source_page": "https://svs.gsfc.nasa.gov/5415",
+    "source_json": "https://svs.gsfc.nasa.gov/vis/a000000/a005400/a005415/mooninfo_2025.json",
+    "records": 8760,
+    "reference": "NASA SVS",
+    "timezone": "UTC",
+    "type": "geocentric"
+  },
+  "2026": {
+    "source_page": "https://svs.gsfc.nasa.gov/5587",
+    "source_json": "https://svs.gsfc.nasa.gov/vis/a000000/a005500/a005587/mooninfo_2026.json",
+    "records": 8760,
+    "reference": "NASA SVS",
+    "timezone": "UTC",
+    "type": "geocentric"
+  }
+}
