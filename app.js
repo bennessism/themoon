@@ -137,7 +137,7 @@ countrySelect.addEventListener('change',populateLocations);
 $('applyLocation').addEventListener('click',()=>{const loc=selectedLocation();localStorage.setItem('themoonCountry',countrySelect.value);localStorage.setItem('themoonLocation',loc.id);panelToggle($('locationPanel'),false);loadWeather()});
 $('infoChangeLocation').addEventListener('click',()=>{panelToggle($('infoPanel'),false);panelToggle($('locationPanel'),true)});
 $('infoOpenWorkstation').addEventListener('click',openWorkstation);
-renderMoon();loadCurrentNASA();loadCatalog().then(loadWeather);
+renderMoon();loadCatalog().then(loadWeather);
 setInterval(loadCurrentNASA,60*60*1000);
 
 /* One-year-at-a-time NASA SVS workstation archive. */
@@ -304,3 +304,4 @@ reportDay.addEventListener('change',renderReport);
 reportHour.addEventListener('change',renderReport);
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&reportPanel.classList.contains('show'))closeWorkstation()});
 initializeReport();
+loadCurrentNASA();
