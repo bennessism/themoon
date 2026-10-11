@@ -27,3 +27,53 @@
 .panel{position:absolute;z-index:30;top:82px;right:20px;width:min(380px,calc(100% - 40px));padding:23px;background:var(--panel);border:1px solid var(--line);border-radius:20px;backdrop-filter:blur(22px);box-shadow:0 20px 70px rgba(0,0,0,.42);opacity:0;transform:translateY(-8px);pointer-events:none;transition:.22s ease}.panel.show{opacity:1;transform:none;pointer-events:auto}.panel-close{position:absolute;right:13px;top:12px;width:38px;height:38px;border-radius:50%;border:0;background:#151922;color:#ddd;font-size:25px;cursor:pointer}.eyebrow{text-transform:uppercase;letter-spacing:.14em;color:#8e98a6;font-size:10px}.panel h2{margin:7px 42px 18px 0;font-size:25px}.facts{display:grid;grid-template-columns:1fr 1fr;gap:10px}.facts div{padding:13px;border-radius:13px;background:#0f131a;border:1px solid #1d232c}.facts span{display:block;color:#7f8996;font-size:11px}.facts strong{display:block;margin-top:5px;font-size:14px}.source-note{color:#7f8996;font-size:11px;line-height:1.55;margin:17px 0 0}.location-panel label{display:block;color:#929ca9;font-size:12px;margin:13px 0}.location-panel select{display:block;width:100%;margin-top:6px;padding:12px;border-radius:11px;border:1px solid #29313d;background:#0c1016;color:#eef2f8}.apply-btn{width:100%;padding:12px 14px;border:0;border-radius:11px;background:#d8dde6;color:#11151b;font-weight:700;cursor:pointer}
 @media(max-width:680px){.moon{width:min(54vw,290px)}.eyepiece-ring{width:92vw}.bottom{align-items:stretch;flex-direction:column-reverse;gap:10px}.moon-summary{text-align:left}.location-btn{max-width:100%;width:max-content}.scene-toggle{bottom:168px}.observatory-mode .moon-wrap{top:27%;left:60%;transform:translate(-50%,-50%) scale(.58)}.desk{left:4%;width:31%}.mounted-scope{right:4%;width:38%}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+
+/* Interactive Moon Monitoring Dome */
+.observatory-mode .scene-toggle{display:none}
+.telescope-mode .scene-toggle{display:block;z-index:16;inset:auto 50% max(150px,env(safe-area-inset-bottom) + 115px) auto;transform:translateX(50%);width:auto;height:44px;color:#e9edf4;white-space:nowrap}
+.telescope-mode .scene-toggle span{position:static;transform:none;display:inline-block}
+.telescope-mode .equipment-hotspot{display:none}
+.observatory-mode .equipment-hotspot{display:flex}
+.equipment-hotspot{position:absolute;z-index:15;pointer-events:auto;align-items:flex-end;justify-content:center;cursor:pointer;border:1px solid rgba(175,206,241,.24);border-radius:18px;background:rgba(20,39,60,.08);color:#e8f1ff;transition:background .2s ease,border-color .2s ease}
+.equipment-hotspot:hover,.equipment-hotspot:focus-visible{background:rgba(77,124,164,.18);border-color:rgba(175,206,241,.7);outline-offset:3px}
+.equipment-hotspot span{padding:7px 12px;margin-bottom:-20px;background:rgba(5,12,22,.88);border:1px solid #34465b;border-radius:999px;font-size:12px;white-space:nowrap;box-shadow:0 4px 18px #0009}
+.workstation-hotspot{left:7%;bottom:19%;width:28%;height:22%}
+.telescope-hotspot{right:8%;bottom:21%;width:30%;height:34%}
+.desk-screen{position:absolute;left:25%;bottom:100%;width:58%;height:112px;border:6px solid #181e27;border-bottom-width:13px;border-radius:10px 10px 3px 3px;background:radial-gradient(circle at 32% 48%,#b8c8d7 0 15%,#1a314b 16% 17%,transparent 18%),linear-gradient(125deg,#07121f,#132a40);box-shadow:0 0 25px #3d83b42b,inset 0 0 15px #0008}
+.screen-moon{position:absolute;left:24%;top:23%;width:28%;aspect-ratio:1;background:linear-gradient(90deg,#adbaca 55%,#253448 56%);border-radius:50%;box-shadow:0 0 9px #b7ccdf88}
+.screen-bars{position:absolute;right:10%;top:22%;width:23%;height:55%;background:repeating-linear-gradient(to bottom,#6598bc 0 3px,transparent 3px 12px);opacity:.7}
+.workstation-panel{position:absolute;z-index:45;inset:clamp(12px,4vh,36px) max(12px,calc((100% - 860px)/2));padding:clamp(18px,3.5vw,32px);border:1px solid #3a4d62;border-radius:22px;background:linear-gradient(160deg,rgba(14,25,39,.99),rgba(5,10,17,.99));box-shadow:0 30px 90px #000d;color:#e9edf4;overflow:auto;visibility:hidden;opacity:0;pointer-events:none;transform:translateY(12px);transition:opacity .22s,transform .22s,visibility .22s}
+.workstation-panel.show{visibility:visible;opacity:1;pointer-events:auto;transform:none}
+.report-heading{display:flex;justify-content:space-between;gap:20px;position:relative;padding-right:45px}
+.report-heading h2{font-size:clamp(23px,3vw,34px);margin:8px 0}
+.report-heading p{font-size:13px;color:#9aa9bc;margin:0}
+.report-heading .panel-close{top:0;right:0}
+.report-tools{display:flex;flex-wrap:wrap;gap:12px;align-items:end;margin-top:24px}
+.report-tools label{display:flex;flex-direction:column;gap:7px;flex:1 1 105px;font-size:12px;color:#aab6c6}
+.report-tools select{width:100%;padding:11px 10px;color:#f3f7fc;background:#111d2a;border:1px solid #3a4a5e;border-radius:9px;min-height:44px}
+.report-today{color:#dce9f7;background:#193047;border:1px solid #38536d;padding:11px 14px;border-radius:9px;min-height:44px;cursor:pointer}
+.report-status{font-size:12px;color:#adc1d5;margin:20px 0;min-height:17px}
+.report-date-row{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin:10px 0 16px}
+.report-date-row h3{font-size:clamp(16px,2.6vw,22px);margin:0}
+.report-date-row span{font-size:13px;border:1px solid #41617b;border-radius:999px;padding:8px 13px;background:#132438}
+.report-metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.report-metrics>div{border:1px solid #273a50;background:#101c2b;padding:18px;border-radius:13px;min-width:0}
+.report-metrics span{display:block;font-size:12px;color:#9bacc0}
+.report-metrics strong{display:block;font-size:clamp(17px,3vw,25px);margin-top:8px;overflow-wrap:anywhere}
+.report-monthly{border-top:1px solid #2b3d50;margin-top:24px;padding-top:8px}
+.report-monthly h3{font-size:16px}
+.report-monthly p{color:#b8c7d7;font-size:13px;line-height:1.65}
+.workstation-panel .source-note{margin-top:20px}
+@media(max-width:680px){
+ .desk-screen{height:62px;border-width:3px;border-bottom-width:7px}
+ .workstation-hotspot{left:3%;bottom:24%;width:37%;height:22%}
+ .telescope-hotspot{right:2%;bottom:27%;width:43%;height:30%}
+ .equipment-hotspot span{font-size:10px;padding:7px 9px}
+ .workstation-panel{inset:8px;padding:18px 14px;border-radius:16px}
+ .report-tools{gap:9px}
+ .report-tools label{flex:1 1 40%;min-width:0}
+ .report-today{width:100%}
+ .report-metrics>div{padding:13px}
+ .report-metrics strong{font-size:17px}
+}
