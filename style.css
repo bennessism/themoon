@@ -230,3 +230,6 @@
  .computer-base{width:16%}
 }
 @media(prefers-reduced-motion:reduce){.screen-glitch,.activity-led,.terminal-cursor{animation:none!important}.screen-glitch{opacity:0}}
+
+/* Remove the legacy rear barrel cap now that the telescope has separate optical ends. */
+.observatory-mode .scope-body:after{content:none}
