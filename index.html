@@ -27,8 +27,8 @@
       <div class="dome-shell" aria-hidden="true"><div class="dome-ribs"></div><div class="dome-light"></div></div>
       <div class="dome-display" aria-hidden="true"><div class="display-arc"></div><span class="display-label">LUNAR SURFACE · MONITOR</span><span class="display-foot">GEOCENTRIC PHASE VIEW</span></div>
       <div class="floor"></div>
-      <div class="desk"><span class="lamp"></span><span class="chart"></span><span class="desk-screen"><span class="screen-moon"></span><span class="screen-bars"></span></span></div>
-      <div class="mounted-scope"><span class="scope-body"></span><span class="scope-leg l1"></span><span class="scope-leg l2"></span></div>
+      <div class="desk" aria-hidden="true"><span class="desk-screen"><span class="work-screen-content"><span class="terminal-header">LUNAR SYSTEM // ONLINE</span><span class="terminal-grid"></span><span class="terminal-lines"></span><span class="terminal-cursor"></span></span><span class="screen-glitch"></span></span><span class="computer-base"><i class="activity-led"></i><i class="power-led"></i></span></div>
+      <div class="mounted-scope" aria-hidden="true"><span class="scope-back"></span><span class="scope-body"><span class="scope-highlight"></span></span><span class="scope-front"></span><span class="scope-focuser"></span><span class="scope-mount"></span><span class="scope-axis"></span><span class="scope-leg l1"></span><span class="scope-leg l2"></span><span class="scope-leg l3"></span></div>
       <div class="console"><i></i><i></i><i></i></div>
       <button id="workstationBtn" class="equipment-hotspot workstation-hotspot" type="button" aria-label="Open Moon workstation"><span class="sr-only">Open Moon Workstation</span></button>
       <button id="telescopeBtn" class="equipment-hotspot telescope-hotspot" type="button" aria-label="Look through telescope"><span class="sr-only">Look through telescope</span></button>
@@ -49,8 +49,9 @@
 
     <button id="sceneToggle" class="scene-toggle back-to-dome" type="button" aria-label="Back to dome"><span id="tapHint">← Back to dome</span></button>
 
+    <div class="area-dock"><button id="locationBtn" class="location-btn" type="button"><span id="locationLabel">Loading location…</span><b>⌄</b></button></div>
+
     <footer class="bottom">
-      <button id="locationBtn" class="location-btn" type="button"><span id="locationLabel">Loading location…</span><b>⌄</b></button>
       <div class="moon-summary">
         <strong id="phaseName">Moon</strong>
         <span><b id="illumination">--%</b> illuminated · <span id="weatherLabel">Loading weather…</span></span>
