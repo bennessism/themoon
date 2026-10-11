@@ -1,7 +1,7 @@
 const $=id=>document.getElementById(id);
 const scene=$('scene'),moonShadow=$('moonShadow'),weatherLabel=$('panelWeather'),locationLabel=$('locationLabel');
 const countrySelect=$('countrySelect'),locationSelect=$('locationSelect');
-let roomView=true,catalog=null,currentWeather=null;
+let catalog=null,currentWeather=null;
 
 function lunarData(date=new Date()){
   const synodic=29.530588853;
@@ -117,13 +117,6 @@ async function loadWeather(){
     applyWeather(p.locations?.[loc.id]||{weather_code:0});
   }catch{applyWeather({weather_code:0});weatherLabel.textContent='Weather unavailable'}
 }
-function setRoomView(next){
-  roomView=next;scene.classList.toggle('observatory-mode',roomView);scene.classList.toggle('telescope-mode',!roomView);
-  $('viewLabel').textContent=roomView?'Lunar Monitoring Dome':'Telescope View';
-  $('tapHint').textContent='← Back to dome';
-  $('sceneToggle').setAttribute('aria-label','Back to dome');
-  if(!roomView && scene.classList.contains('mobile-pan'))centerLunarPanorama();
-}
 function panelToggle(panel,show){
   panel.classList.toggle('show',show);
   panel.setAttribute('aria-hidden',String(!show));
@@ -134,10 +127,6 @@ function toggleLocationFields(show){
   fields.hidden=!show;
   $('infoChangeLocation').setAttribute('aria-expanded',String(show));
 }
-$('sceneToggle').addEventListener('click',()=>setRoomView(true));
-$('telescopeBtn').addEventListener('click',()=>{
-  closeWorkstation();panelToggle($('infoPanel'),false);setRoomView(false);
-});
 $('workstationBtn').addEventListener('click',openWorkstation);
 $('infoBtn').addEventListener('click',()=>{
   const opening=!$('infoPanel').classList.contains('show');
@@ -307,7 +296,6 @@ function updateMonthlyVisualization(year,month,records){
   });
 }
 function openWorkstation(){
-  setRoomView(true);
   panelToggle($('infoPanel'),false);toggleLocationFields(false);
   panelToggle(reportPanel,true);
   loadReportYear();
@@ -324,37 +312,20 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&reportPanel.classLi
 initializeReport();
 loadCurrentNASA();
 
-// Keep every physical room object at the same 1600x900 coordinates.
-// Desktop: fit the complete composition. Portrait phone: height-fit,
-// then browse the exact same composition with native horizontal scrolling.
-let wasMobilePan=false;
-function centerLunarPanorama(){
-  const viewport=$('stageViewport');
-  if(viewport && scene.classList.contains('mobile-pan')){
-    viewport.scrollTo({left:Math.max(0,(viewport.scrollWidth-viewport.clientWidth)/2),behavior:'smooth'});
-  }
-}
+// Desktop keeps a uniformly scaled 1600×900 composition.
+// Mobile uses a centered, one-column responsive room controlled by CSS.
 function fitObservatoryStage(){
-  const stage=$('sceneStage'),viewport=$('stageViewport'),spacer=$('stageSpacer');
-  if(!stage||!viewport||!spacer)return;
+  const stage=$('sceneStage'),spacer=$('stageSpacer'),viewport=$('stageViewport');
+  if(!stage||!spacer||!viewport)return;
   const width=scene.clientWidth||window.innerWidth;
   const height=scene.clientHeight||window.innerHeight;
-  const mobile=window.matchMedia('(max-width: 760px) and (orientation: portrait)').matches;
-  const previousWidth=spacer.getBoundingClientRect().width;
-  const oldCenter=wasMobilePan&&previousWidth>0
-    ?(viewport.scrollLeft+viewport.clientWidth/2)/previousWidth:.5;
-  const scale=mobile?height/900:Math.min(width/1600,height/900);
-  stage.style.setProperty('--stage-scale',String(Math.max(.05,scale)));
-  scene.classList.toggle('mobile-pan',mobile);
-  spacer.style.width=mobile?Math.ceil(1600*scale)+'px':'100%';
-  spacer.style.height=mobile?Math.ceil(900*scale)+'px':'100%';
-  if(mobile){
-    const target=Math.max(0,(1600*scale)*oldCenter-width/2);
-    viewport.scrollLeft=target;
-  }else{
-    viewport.scrollLeft=0;
-  }
-  wasMobilePan=mobile;
+  const mobile=window.matchMedia('(max-width: 760px)').matches;
+  scene.classList.toggle('mobile-column',mobile);
+  scene.classList.remove('mobile-pan');
+  stage.style.setProperty('--stage-scale',String(mobile?1:Math.min(width/1600,height/900)));
+  spacer.style.width='100%';
+  spacer.style.height='100%';
+  viewport.scrollLeft=0;
 }
 window.addEventListener('resize',fitObservatoryStage,{passive:true});
 window.addEventListener('orientationchange',fitObservatoryStage,{passive:true});
